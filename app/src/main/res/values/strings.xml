@@ -13,4 +13,17 @@
     <string name="no_guess_yet">No guess yet</string>
     <string name="definition_hint">Hint: definition</string>
     <string name="synonym_hint">Hint: synonym</string>
+
+    <!-- New Settings Keys for translation -->
+    <string name="settings_title">Settings</string>
+    <string name="language_selection">Language</string>
+    <string name="dark_theme_toggle">Dark Theme</string>
+    <string name="haptics_toggle">Haptics (Vibration)</string>
+    <string name="sounds_toggle">Sound Effects</string>
+    <string name="tutorial_title">How to Play</string>
+    <string name="hint_text">Need a hint?</string>
+    <string-array name="language_options">
+    <item>English</item>
+    <item>Afrikaans</item>
+    </string-array>
 </resources>

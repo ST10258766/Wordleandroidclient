@@ -18,6 +18,16 @@ object SettingsStore {
     private val HAPTICS    = booleanPreferencesKey("haptics")
     private val SOUNDS     = booleanPreferencesKey("sounds")
 
+    private val LANGUAGE_CODE = stringPreferencesKey("language_code")
+
+    // --- LANGUAGE FLOW ---
+    fun languageCodeFlow(ctx: Context): Flow<String> =
+        ctx.dataStore.data.map { it[LANGUAGE_CODE] ?: "en" } // Default to English
+
+    suspend fun setLanguageCode(ctx: Context, v: String) {
+        ctx.dataStore.edit { it[LANGUAGE_CODE] = v }
+    }
+
     fun darkThemeFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[DARK_THEME] ?: false }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wordle Android Kliënt</string>
+    <string name="welcome_title">Welkom by WordRush</string>
+    <string name="get_started">Begin</string>
+    <string name="daily_wordrush">Daaglikse WordRush</string>
+    <string name="back">⌫</string>
+    <string name="help">Hulp</string>
+    <string name="enter">ENT</string>
+    <string name="backspace">RUGSPASIE</string>
+    <string name="powerup_locked">Power-up gesluit</string>
+    <string name="backspace_short">RUG</string>
+    <string name="opponent_avatar">Teenstander-avatar</string>
+    <string name="no_guess_yet">Nog geen raaiskoot nie</string>
+    <string name="definition_hint">Wenk: Definisie</string>
+    <string name="synonym_hint">Wenk: Sinoniem</string>
+
+    <string name="settings_title">Instellings</string>
+    <string name="language_selection">Taal</string>
+    <string name="dark_theme_toggle">Donker Tema</string>
+    <string name="haptics_toggle">Haptiek (Vibrasie)</string>
+    <string name="sounds_toggle">Klankeffekte</string>
+    <string name="tutorial_title">Hoe om te Speel</string>
+    <string name="hint_text">Benodig n wenk?</string>
+
+    <string-array name="language_options">
+        <item>Engels</item>
+        <item>Afrikaans</item>
+    </string-array>
+</resources>

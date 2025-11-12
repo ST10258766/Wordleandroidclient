@@ -17,10 +17,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import vcmsa.projects.wordleandroidclient.api.RetrofitClient
 import vcmsa.projects.wordleandroidclient.multiplayer.*
+import android.content.Context
 
 import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
+
 
     private lateinit var viewModel: WordleViewModel
 
@@ -46,6 +48,14 @@ class MainActivity : AppCompatActivity() {
     // Friends MP extras
     private var roomCode: String? = null
     private var targetWord: String? = null
+
+
+
+    // CRITICAL: This ensures the correct language resources are loaded before onCreate
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleManager.wrap(newBase))
+    }
+
 
     // Shared opponent view
     private var opponentView: OpponentProgressView? = null
@@ -486,4 +496,6 @@ class MainActivity : AppCompatActivity() {
         friendEventsJob?.cancel()
         super.onDestroy()
     }
+
+
 }

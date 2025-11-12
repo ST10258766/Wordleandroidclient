@@ -19,6 +19,32 @@
             android:textStyle="bold"
             android:textSize="24sp"/>
 
+        <!-- NEW: Language Selection Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_section_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/language_selection"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <Spinner
+                android:id="@+id/spLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:minWidth="100dp"/>
+        </LinearLayout>
+
         <!-- Dark Theme -->
         <LinearLayout
             android:layout_width="match_parent"
