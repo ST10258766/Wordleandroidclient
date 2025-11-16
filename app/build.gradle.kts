@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
     id("com.google.gms.google-services")
 
 }
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "vcmsa.projects.wordleandroidclient"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +66,7 @@ dependencies {
 
     // --- Google Sign-In ---
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("androidx.lifecycle:lifecycle-process:2.9.4")
 
     // --- Testing ---
     testImplementation("junit:junit:4.13.2")
@@ -76,5 +78,11 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.4.0")
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // --- Room Database ---
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
 
 }

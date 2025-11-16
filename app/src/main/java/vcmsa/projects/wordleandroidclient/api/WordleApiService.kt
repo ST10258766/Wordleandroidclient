@@ -6,15 +6,15 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-data class WordTodayResponse(
-    val date: String,
-    val lang: String,
-    val mode: String,
-    val length: Int,
-    val hasDefinition: Boolean,
-    val hasSynonym: Boolean,
-    val played: Boolean = false
-)
+//data class WordTodayResponse(
+//    val date: String,
+//    val lang: String,
+//    val mode: String,
+//    val length: Int,
+//    val hasDefinition: Boolean,
+//    val hasSynonym: Boolean,
+//    val played: Boolean = false
+//)
 
 data class GuessRequest(
     val guess: String,
@@ -80,6 +80,27 @@ data class MyResultResponse(
     val answer: String? = null
 )
 
+data class WordTodayResponse(
+    val date: String,
+    val lang: String,
+    val mode: String,
+    val length: Int,
+    val hasDefinition: Boolean,
+    val hasSynonym: Boolean,
+    val played: Boolean = false,
+    val answer: String? = null
+) {
+
+    fun toJson(): String =
+        com.google.gson.Gson().toJson(this)
+
+    companion object {
+        fun fromJson(json: String): WordTodayResponse =
+            com.google.gson.Gson().fromJson(json, WordTodayResponse::class.java)
+    }
+}
+
+
 interface WordApiService {
     @GET("today")
     suspend fun getToday(
@@ -113,4 +134,5 @@ interface WordApiService {
         @Query("date") date: String,
         @Query("lang") lang: String = "en-ZA"
     ): Response<MyResultResponse>
+
 }

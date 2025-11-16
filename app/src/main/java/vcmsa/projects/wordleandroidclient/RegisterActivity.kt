@@ -18,6 +18,7 @@ class RegisterActivity : AppCompatActivity() {
     private val db by lazy { FirebaseFirestore.getInstance() }
 
     private lateinit var etFullName: EditText
+
     private lateinit var etEmail: EditText
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText

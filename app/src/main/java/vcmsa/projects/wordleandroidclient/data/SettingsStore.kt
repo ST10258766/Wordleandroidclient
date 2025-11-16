@@ -18,6 +18,9 @@ object SettingsStore {
     private val HAPTICS    = booleanPreferencesKey("haptics")
     private val SOUNDS     = booleanPreferencesKey("sounds")
 
+    private val TODAY_META_JSON = stringPreferencesKey("today_meta_json")
+    private val TODAY_META_DATE = stringPreferencesKey("today_meta_date")
+
     fun darkThemeFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[DARK_THEME] ?: false }
 
@@ -36,6 +39,19 @@ object SettingsStore {
     suspend fun setSounds(ctx: Context, v: Boolean) {
         ctx.dataStore.edit { it[SOUNDS] = v }
     }
+
+    suspend fun saveTodayMetadata(ctx: Context, json: String, date: String) {
+        ctx.dataStore.edit {
+            it[TODAY_META_JSON] = json
+            it[TODAY_META_DATE] = date
+        }
+    }
+
+    suspend fun loadTodayMetadata(ctx: Context): Pair<String?, String?> {
+        val prefs = ctx.dataStore.data.first()
+        return prefs[TODAY_META_JSON] to prefs[TODAY_META_DATE]
+    }
+
 
     // -------- Daily lock + saved game state (PER USER tracking) --------
     private val LAST_PLAYED_DATE   = stringPreferencesKey("last_played_date")

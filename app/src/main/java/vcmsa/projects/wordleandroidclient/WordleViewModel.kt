@@ -17,7 +17,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import vcmsa.projects.wordleandroidclient.api.*
+import vcmsa.projects.wordleandroidclient.data.DailyWordRepository
+import vcmsa.projects.wordleandroidclient.data.OfflineSyncManager
 import vcmsa.projects.wordleandroidclient.data.SettingsStore
+import vcmsa.projects.wordleandroidclient.data.SyncResult
+import vcmsa.projects.wordleandroidclient.data.WordleDatabase
+import vcmsa.projects.wordleandroidclient.utils.hasInternetConnection
 
 class WordleViewModel(
     private val wordApi: WordApiService,
@@ -85,6 +90,14 @@ class WordleViewModel(
     private var speedleWordId: String? = null
     private var speedleDuration: Int = 90
 
+    // Offline support managers
+    private val offlineSyncManager = OfflineSyncManager(appContext, wordApi)
+    private val dailyWordRepo = DailyWordRepository(appContext, wordApi)
+
+    // Offline mode indicator
+    private val _isOfflineMode = MutableStateFlow(false)
+    val isOfflineMode: StateFlow<Boolean> = _isOfflineMode
+
     // ---------- DAILY ----------
 
     fun setModeDaily() {
@@ -117,69 +130,128 @@ class WordleViewModel(
 
     fun loadDailyWord() {
         _gameState.value = GameState.LOADING
+
         viewModelScope.launch {
-            try {
-                val resp = wordApi.getToday()
-                val meta = resp.body()
-                if (!resp.isSuccessful || meta == null) {
-                    Log.e("WordleVM","getToday failed: ${resp.code()} ${resp.message()}")
-                    _userMessage.value = "Couldn't load today's word."
-                    _gameState.value = GameState.ERROR
-                    return@launch
-                }
-                _today.value = meta
+            val hasInternet = hasInternetConnection(appContext)
+            _isOfflineMode.value = !hasInternet
 
-                val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            // Get today's word (from cache or API)
+            val meta = dailyWordRepo.getTodaysWord()
 
-                // 1) Server-authoritative lock if signed in
-                if (user != null) {
-                    val r = wordApi.getMyResult(date = meta.date, lang = meta.lang)
-                    if (r.isSuccessful && r.body() != null) {
-                        loadMyResultAndRender(r.body()!!, meta.length)
-                        return@launch
-                    }
+            if (meta == null) {
+                _userMessage.value = if (hasInternet) {
+                    "Couldn't load today's word."
                 } else {
-                    // 2) Device-only fallback
-                    val last = SettingsStore.getLastPlayedDate(appContext)
-                    if (last == meta.date) {
-                        // Load saved game state
-                        val savedState = SettingsStore.getLastGameState(appContext)
-                        if (savedState != null) {
-                            val (guesses, feedbackRows) = savedState
-                            resetBoard(meta.length)
+                    "Offline & no cached puzzle available."
+                }
+                _gameState.value = GameState.ERROR
+                return@launch
+            }
 
-                            guesses.forEachIndexed { row, guess ->
-                                writeGuessRow(row, guess.uppercase())
-                                val fb = feedbackRows.getOrNull(row) ?: emptyList()
-                                if (fb.isNotEmpty()) applyFeedbackRow(row, fb)
-                            }
-                        } else {
-                            resetBoard(meta.length)
+            _today.value = meta
+
+            // Check if user has COMPLETED the game (won OR lost)
+            val hasCompleted = offlineSyncManager.hasCompletedToday(meta.date, meta.lang)
+
+            if (hasCompleted) {
+                // Game is complete - load and show final state
+                loadLocalProgress(meta, isComplete = true)
+                return@launch
+            }
+
+            // Check if user has any incomplete progress
+            val hasProgress = offlineSyncManager.hasAnyGuessesToday(meta.date, meta.lang)
+
+            if (hasProgress) {
+                // Load incomplete progress and continue playing
+                loadLocalProgress(meta, isComplete = false)
+                return@launch
+            }
+
+            // Check remote if online (for users who played on another device)
+            if (hasInternet) {
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user != null) {
+                    try {
+                        val r = wordApi.getMyResult(meta.date, meta.lang)
+                        if (r.isSuccessful && r.body() != null) {
+                            loadMyResultAndRender(r.body()!!, meta.length)
+                            return@launch
                         }
-
-                        _gameState.value = GameState.LOST
-                        _userMessage.value = "You've already played today. Come back tomorrow!"
-                        return@launch
+                    } catch (e: Exception) {
+                        Log.e("WordleVM", "Failed to check remote result: ${e.message}")
                     }
                 }
-
-                // Fresh board
-                speedleLength = null
-                resetBoard(meta.length)
-                _gameState.value = GameState.PLAYING
-
-            } catch (e: Exception) {
-                Log.e("WordleVM","getToday error", e)
-                _userMessage.value = "Network error. Try again."
-                _gameState.value = GameState.ERROR
             }
+
+            // Fresh game - no progress anywhere
+            resetBoard(meta.length)
+            _gameState.value = GameState.PLAYING
         }
     }
+
+    private suspend fun loadLocalProgress(meta: WordTodayResponse, isComplete: Boolean) {
+        _isLoadingPreviousResult.value = true
+
+        val localGuesses = offlineSyncManager.loadLocalGuesses(meta.date, meta.lang)
+
+        if (localGuesses.isEmpty()) {
+            resetBoard(meta.length)
+            _gameState.value = GameState.PLAYING
+            _isLoadingPreviousResult.value = false
+            return
+        }
+
+        Log.d("LOAD_LOCAL", "Loading ${localGuesses.size} local guesses (complete: $isComplete)")
+
+        resetBoard(meta.length)
+
+        // Restore all guesses
+        localGuesses.sortedBy { it.rowIndex }.forEach { guess ->
+            writeGuessRow(guess.rowIndex, guess.guess.uppercase())
+            applyFeedbackRow(guess.rowIndex, guess.feedback)
+        }
+
+        if (isComplete) {
+            // Game is complete - show final state
+            val won = localGuesses.any { it.won }
+            _gameState.value = if (won) GameState.WON else GameState.LOST
+            _userMessage.value = if (_isOfflineMode.value) {
+                "You've already played today. Will sync when online."
+            } else {
+                "You've already played today. Come back tomorrow!"
+            }
+
+            // Try to load summary
+            if (hasInternetConnection(appContext)) {
+                loadEndSummaryDaily(won, null)
+            }
+        } else {
+            // Game is incomplete - continue playing
+            _gameState.value = GameState.PLAYING
+            _userMessage.value = "Continuing your game..."
+
+            // Set current row to the next available row
+            val maxRow = localGuesses.maxOfOrNull { it.rowIndex } ?: -1
+            currentGuessRow = maxRow + 1
+            _attemptIndex.value = currentGuessRow
+
+            // Set cursor position to start of next row
+            currentPosition = currentGuessRow * meta.length
+        }
+
+        _isLoadingPreviousResult.value = false
+    }
+
+    private fun getTodayDateString(): String {
+        return java.time.LocalDate.now().toString()
+    }
+
+
 
     private fun loadMyResultAndRender(body: MyResultResponse, length: Int) {
         _isLoadingPreviousResult.value = true
 
-        // ADD THIS LOGGING:
         Log.e("LOAD_PREVIOUS", "==========================================")
         Log.e("LOAD_PREVIOUS", "Loading previous result:")
         Log.e("LOAD_PREVIOUS", "Guesses: ${body.guesses}")
@@ -200,6 +272,12 @@ class WordleViewModel(
         _userMessage.value = "You've already played today. Come back tomorrow!"
 
         viewModelScope.launch {
+            // Cache the answer for offline use
+            if (body.answer != null) {
+                dailyWordRepo.updateCachedAnswer(body.date, body.lang, body.answer.uppercase())
+                Log.d("WordleVM", "Cached answer from previous result: ${body.answer}")
+            }
+
             val def = runCatching { wordApi.getDefinition(body.lang, body.date).body()?.definition?.definition }.getOrNull()
             val syn = runCatching { wordApi.getSynonym(body.lang, body.date).body()?.synonym }.getOrNull()
             _summary.value = EndGameSummary(
@@ -212,6 +290,58 @@ class WordleViewModel(
 
         _isLoadingPreviousResult.value = false
     }
+
+    /**
+     * Validate guess locally using the cached answer
+     */
+    private suspend fun validateGuessLocally(guess: String, answer: String): List<String> {
+        val result = MutableList(guess.length) { "A" }
+        val answerChars = answer.toMutableList()
+
+        // First pass: mark correct positions (Green)
+        for (i in guess.indices) {
+            if (guess[i] == answer[i]) {
+                result[i] = "G"
+                answerChars[i] = '_'  // Mark as used
+            }
+        }
+
+        // Second pass: mark present but wrong position (Yellow)
+        for (i in guess.indices) {
+            if (result[i] == "A") {  // Not already marked as correct
+                val idx = answerChars.indexOf(guess[i])
+                if (idx != -1) {
+                    result[i] = "Y"
+                    answerChars[idx] = '_'  // Mark as used
+                }
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * Get cached answer for offline validation
+     */
+    private suspend fun getCachedAnswer(): String? {
+        val meta = _today.value ?: return null
+        return try {
+            val db = WordleDatabase.getDatabase(appContext)
+            val cachedWord = db.cachedDailyWordDao().getCachedWord(meta.date, meta.lang)
+            val answer = cachedWord?.answer
+            if (answer != null) {
+                Log.d("WordleVM", "Found cached answer for offline validation")
+            } else {
+                Log.d("WordleVM", "No cached answer available")
+            }
+            answer
+        } catch (e: Exception) {
+            Log.e("WordleVM", "Failed to get cached answer: ${e.message}")
+            null
+        }
+    }
+
+
 
     private suspend fun submitDailyResult(won: Boolean): String? {
         val meta = _today.value ?: return null
@@ -227,7 +357,16 @@ class WordleViewModel(
                     clientId = null
                 )
             )
-            resp.body()?.answer?.uppercase()    // 👈 return answer
+
+            val answer = resp.body()?.answer?.uppercase()
+
+            // Cache the answer for offline use
+            if (answer != null) {
+                dailyWordRepo.updateCachedAnswer(meta.date, meta.lang, answer)
+                Log.d("WordleVM", "Cached answer for offline mode: $answer")
+            }
+
+            answer
         } catch (e: Exception) {
             Log.e("WordleVM", "submitDaily error", e)
             null
@@ -512,49 +651,130 @@ class WordleViewModel(
 
     private fun submitGuessDaily(start: Int, guess: String) {
         val meta = _today.value ?: return
+        val hasInternet = hasInternetConnection(appContext)
+
         viewModelScope.launch {
             _isSubmitting.value = true
             try {
-                val resp = wordApi.validateGuess(GuessRequest(guess, meta.lang, meta.date))
-                if (resp.isSuccessful) {
-                    val body = resp.body()
-                    if (body != null) {
-                        applyFeedbackToRow(start, body.feedback)
-                        if (body.won) {
-                            _gameState.value = GameState.WON
-                            hapticSuccess()
 
-                            val guesses = collectGuessesSoFar()
-                            val feedbackRows = extractFeedbackRows()
+                // --- FIX: get cached answer once, available everywhere ---
+                val cachedAnswer: String? = getCachedAnswer()
 
-                            // Write to Firestore directly
-                            writeResultToFirestore(won = true)
+                var feedback: List<String>? = null
 
-                            // Also submit to backend (for stats/leaderboard)
-                            val answer = submitDailyResult(won = true)
-
-                            val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
-
-                            _today.value?.date?.let {
-                                SettingsStore.setLastPlayedDate(appContext, it, userId)
-                                SettingsStore.saveLastGameState(appContext, guesses, feedbackRows)
-                            }
-
-                            loadEndSummaryDaily(true, answer)
-                        } else {
-                            advanceOrLoseDaily()
+                if (hasInternet) {
+                    try {
+                        val resp = wordApi.validateGuess(GuessRequest(guess, meta.lang, meta.date))
+                        if (resp.isSuccessful && resp.body() != null) {
+                            feedback = resp.body()?.feedback
                         }
+                    } catch (e: Exception) {
+                        Log.e("WordleVM", "Online validation failed: ${e.message}")
+                    }
+                }
+
+                // Offline fallback
+                if (feedback == null) {
+                    if (cachedAnswer != null) {
+                        feedback = validateGuessLocally(guess, cachedAnswer)
+                    } else {
+                        _userMessage.value = if (hasInternet) {
+                            "Invalid guess or network error."
+                        } else {
+                            "Cannot play offline - puzzle not loaded yet."
+                        }
+                        _isSubmitting.value = false
+                        return@launch
+                    }
+                }
+
+                // Continue as normal...
+                applyFeedbackToRow(start, feedback)
+                val won = feedback.all { it == "G" }
+
+                offlineSyncManager.saveGuessLocally(
+                    meta.date, meta.lang, guess, feedback, currentGuessRow, won
+                )
+
+                if (won) {
+                    _gameState.value = GameState.WON
+                    hapticSuccess()
+
+                    if (hasInternet) {
+                        writeResultToFirestore(true)
+                        submitDailyResult(true)
+                        loadEndSummaryDaily(true, cachedAnswer)
+                    } else {
+                        _userMessage.value = "You won! 🎉 (Offline mode)"
+                        _summary.value = EndGameSummary(null, null, true, cachedAnswer)
                     }
                 } else {
-                    _userMessage.value = "Invalid guess."
+                    advanceOrLoseDaily(hasInternet)
                 }
-            } catch (e: Exception) {
-                _userMessage.value = "Network error."
+
             } finally {
                 _isSubmitting.value = false
             }
         }
     }
+
+
+    /**
+     * Check if a word is valid using local wordlist
+     */
+    private fun isValidWord(word: String, expectedLength: Int): Boolean {
+        if (word.length != expectedLength) return false
+
+        return try {
+            // Load words from assets
+            val filename = when (expectedLength) {
+                3 -> "wordlist_en_3.txt"
+                4 -> "wordlist_en_4.txt"
+                5 -> "wordlist_en_5.txt"
+                6 -> "wordlist_en_6.txt"
+                7 -> "wordlist_en_7.txt"
+                else -> return true // If no wordlist, accept any word
+            }
+
+            appContext.assets.open(filename).bufferedReader().use { reader ->
+                reader.lineSequence()
+                    .map { it.trim().uppercase() }
+                    .any { it == word.uppercase() }
+            }
+        } catch (e: Exception) {
+            Log.e("WordleVM", "Failed to load wordlist: ${e.message}")
+            true // If wordlist not found, accept the word
+        }
+    }
+
+    private fun advanceOrLoseDaily(hasInternet: Boolean) {
+        if (currentGuessRow < 5) {
+            currentGuessRow++
+            _attemptIndex.value = currentGuessRow
+        } else {
+            _gameState.value = GameState.LOST
+            stopTimer()
+
+            viewModelScope.launch {
+                if (hasInternet) {
+                    writeResultToFirestore(won = false)
+                    submitDailyResult(won = false)
+
+                    val meta = _today.value
+                    val my = if (meta != null) {
+                        runCatching { wordApi.getMyResult(meta.date, meta.lang).body() }.getOrNull()
+                    } else null
+                    val answer = my?.answer
+
+                    loadEndSummaryDaily(false, answer)
+                } else {
+                    _userMessage.value = "Game over (offline). Will sync when online."
+                    _summary.value = EndGameSummary(null, null, false, null)
+                }
+            }
+        }
+    }
+
     private fun submitGuessSpeedle(start: Int, guess: String) {
         val sessionId = speedleSessionId ?: return
         viewModelScope.launch {
@@ -811,4 +1031,77 @@ class WordleViewModel(
         resetBoard(len)          // clears rows
         _gameState.value = GameState.PLAYING
     }
+
+    /**
+     * Pre-fetch today's word - call this when app starts
+     */
+    fun preFetchDailyWord() {
+        viewModelScope.launch {
+            try {
+                dailyWordRepo.preFetchTodaysWord()
+                Log.d("WordleVM", "Pre-fetched today's word")
+            } catch (e: Exception) {
+                Log.e("WordleVM", "Failed to pre-fetch: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * Sync offline guesses when user comes online
+     */
+    fun syncOfflineGuesses() {
+        viewModelScope.launch {
+            when (val result = offlineSyncManager.syncUnsyncedGuesses()) {
+                is SyncResult.Success -> {
+                    _userMessage.value = "Synced ${result.count} game(s) ✅"
+                    Log.d("WordleVM", "Sync successful: ${result.count}")
+                }
+                is SyncResult.PartialSuccess -> {
+                    _userMessage.value = "Synced ${result.synced}/${result.synced + result.failed} game(s)"
+                    Log.w("WordleVM", "Partial sync: ${result.synced} success, ${result.failed} failed")
+                }
+                is SyncResult.NoInternet -> {
+                    Log.d("WordleVM", "No internet for sync")
+                }
+                is SyncResult.NothingToSync -> {
+                    Log.d("WordleVM", "Nothing to sync")
+                }
+            }
+        }
+    }
+
+    private suspend fun continueAfterMetadataLoaded(meta: WordTodayResponse) {
+
+        val user = FirebaseAuth.getInstance().currentUser
+
+        // Same logic you already have
+        if (user != null) {
+            val r = wordApi.getMyResult(meta.date, meta.lang)
+            if (r.isSuccessful && r.body() != null) {
+                loadMyResultAndRender(r.body()!!, meta.length)
+                return
+            }
+        } else {
+            val last = SettingsStore.getLastPlayedDate(appContext)
+            if (last == meta.date) {
+                val savedState = SettingsStore.getLastGameState(appContext)
+                if (savedState != null) {
+                    val (guesses, feedbackRows) = savedState
+                    resetBoard(meta.length)
+                    guesses.forEachIndexed { row, guess ->
+                        writeGuessRow(row, guess)
+                        applyFeedbackRow(row, feedbackRows[row])
+                    }
+                }
+                _gameState.value = GameState.LOST
+                _userMessage.value = "You've already played today offline."
+                return
+            }
+        }
+
+        // Blank new game
+        resetBoard(meta.length)
+        _gameState.value = GameState.PLAYING
+    }
+
 }

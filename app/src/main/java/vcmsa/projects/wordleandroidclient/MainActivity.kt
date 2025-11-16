@@ -221,6 +221,13 @@ class MainActivity : AppCompatActivity() {
         wireHintButtonsForMode(playMode)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Try to sync when user returns to app
+        viewModel.syncOfflineGuesses()
+    }
+
     // -------------------------
     // MODE HANDLERS
     // -------------------------
