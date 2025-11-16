@@ -123,14 +123,18 @@ WordRush follows a three-layer cloud architecture:
 ### Core Gameplay
 - **Daily Puzzle** shared globally  
 - **Real-time feedback** with colored indicators  
-- **Definition reveal** after each game  
+- **Definition reveal** after each game
+- **Leaderboards** global ranking for top players
+
+
 
 ### Highlighted Modes
 - **Speedle:** Timed sprint (60/90/120 seconds)  
 - **Multiplayer vs AI:** Compete against intelligent opponents (Easy–Hard)  
 - **Hints & Power-ups:** Get clues at a cost of time  
 - **Badges & Streaks:** Unlock glowing achievements  
-- **Themes:** Switch between dark and light styles  
+- **Themes:** Switch between dark and light styles
+- - **Multiplayer with a Friend** invite a friend and compete in real-time
 
 <p align="center">
   <img src="https://media0.giphy.com/media/v1.Y2lkPWFkZWE2ZTUyOHlhOWRwd204N2poZ2NjMjhnNGwwbTZqbnJ6Mmt3aWg2OGNoY21oaSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/62HRHz7zZZYThhTwEI/giphy.gif" width="400"/>
@@ -193,6 +197,10 @@ WordRush follows a three-layer cloud architecture:
 | **Authentication** | Firebase Auth (Email & Google) |
 | **External API** | RapidAPI WordsAPI |
 | **CI/CD** | GitHub Actions |
+| **Notifications** |Firebase Cloud Messaging|
+| **Offline Support** |Room + Firestore Sync|
+| **Localisation** |Multi-language Strings XML|
+
 
 ---
 
@@ -203,16 +211,22 @@ WordRush follows a three-layer cloud architecture:
 - Multiplayer vs AI (Easy–Hard)  
 - Hints, Streaks & Badges  
 - Profile & Settings  
-- Firebase Authentication  
+- Firebase Authentication
+- Biometric Login
+- Offline Mode with Sync
+- Real-time Push Notifications
+- Multi-Language Support
+- Leaderboard
 
 ---
 
 ## 🛡 Non-Functional Requirements
 
-- **Security:** Firebase ID tokens, Firestore rules, secrets via Render  
+- **Security:** Firebase ID tokens, Firestore rules, secrets via Render, Biometrics
 - **Performance:** Cached daily puzzles, timeouts, and error handling  
-- **Accessibility:** Screen reader labels, high contrast themes  
-- **Maintainability:** Modular helpers, semantic commits, CI checks  
+- **Accessibility:** Screen reader labels, high contrast themes, language switching 
+- **Maintainability:** Modular helpers, semantic commits, CI checks, logging + comments
+- **Reliability:** Offline-first design with automatic sync
 
 ---
 
