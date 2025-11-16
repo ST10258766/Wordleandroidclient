@@ -134,7 +134,7 @@ WordRush follows a three-layer cloud architecture:
 - **Hints & Power-ups:** Get clues at a cost of time  
 - **Badges & Streaks:** Unlock glowing achievements  
 - **Themes:** Switch between dark and light styles
-- - **Multiplayer with a Friend** invite a friend and compete in real-time
+- **Multiplayer with a Friend** invite a friend and compete in real-time
 
 <p align="center">
   <img src="https://media0.giphy.com/media/v1.Y2lkPWFkZWE2ZTUyOHlhOWRwd204N2poZ2NjMjhnNGwwbTZqbnJ6Mmt3aWg2OGNoY21oaSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/62HRHz7zZZYThhTwEI/giphy.gif" width="400"/>
