@@ -275,9 +275,9 @@ Render auto-deploys backend changes on merge to `main`.
 During development, **AI** was used responsibly to:
 - **Logo Concept Assistance**: Helped to generate the visual idea for the WordRush logo.
 - **Debugging support**: Assisted in identifying issues with RetrofitClient, Firebase Google SSO setup and general API request handling.
-- **Coding Assistance**: Guided fixing syntax errors, optimising Kotlin functions,structuring ViewModels, and improving modularity in both frontend and backend code.
-- **Troubleshooting**: Helped resolve API intergration problems and JSON parsing issues.
-- **Learning Aid**: Served as a tool to understand best prctices,design patterns , clean code principles and Android UI/UX standards. 
+- **Coding Assistance**: Guided fixing syntax errors, optimising Kotlin functions, structuring ViewModels, and improving modularity in both frontend and backend code.
+- **Troubleshooting**: Helped resolve API integration problems and JSON parsing issues.
+- **Learning Aid**: Served as a tool to understand best practices, design patterns, clean code principles and Android UI/UX standards. 
 
 All implementation and creative decisions were completed manually.  
 AI served only as a supportive tool for learning and troubleshooting.
