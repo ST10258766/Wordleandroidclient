@@ -22,11 +22,12 @@ Built in **Kotlin**, powered by **Firebase**, and connected via a **Render-hoste
 9. [Tech Stack](#tech-stack)  
 10. [Functional Requirements](#functional-requirements)  
 11. [Non-Functional Requirements](#non-functional-requirements)  
-12. [GitHub and CI/CD](#github-and-cicd)  
-13. [Demo Video](#demo-video)  
-14. [Repository Links](#repository-links)  
-15. [References](#references)  
-16. [AI Usage Disclosure](#ai-usage-disclosure)
+12. [GitHub and CI/CD](#github-and-cicd)
+13. [Release Notes](#release-notes)
+14. [Demo Video](#demo-video)  
+15. [Repository Links](#repository-links)  
+16. [References](#references)  
+17. [AI Usage Disclosure](#ai-usage-disclosure)
 
 ---
 
@@ -134,7 +135,7 @@ WordRush follows a three-layer cloud architecture:
 - **Hints & Power-ups:** Get clues at a cost of time  
 - **Badges & Streaks:** Unlock glowing achievements  
 - **Themes:** Switch between dark and light styles
-- **Multiplayer with a Friend** invite a friend and compete in real-time
+- **Multiplayer with a Friend**: invite a friend and compete in real-time
 
 <p align="center">
   <img src="https://media0.giphy.com/media/v1.Y2lkPWFkZWE2ZTUyOHlhOWRwd204N2poZ2NjMjhnNGwwbTZqbnJ6Mmt3aWg2OGNoY21oaSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/62HRHz7zZZYThhTwEI/giphy.gif" width="400"/>
@@ -239,7 +240,47 @@ Both use **GitHub Actions** for build automation.
 Render auto-deploys backend changes on merge to `main`.
 
 ---
+## 📝 Release Notes 
 
+### Part 1: Research & Design 
+This phase focused on defining the vision, design, user experience, and architectural structure of WordRush.
+
+**Research & Design Outcomes:**
+- UX planning: Themes, navigation flow and feedback colours.
+- Visual design system: Colour palette, typography and card layouts.
+- Mode planning: Daily, Speedle and Multiplayer.
+- Feature mapping: Hints, badges, streaks and settings.
+- Wireframes and conceptual UI design.
+This stage ensured a solid blueprint before development.
+
+### Part 2: Prototype Development 
+This stage focused on building the first functional version of WordRush to demonstrate the core gameplay and validate the overall concept.
+
+**Prototype Features:**
+- Fully working API integration.
+- Google SSO login implemented.
+- Definition revealed after each completed game.
+- Speedle mode with timed rounds.
+- Multiplayer vs AI ( Easy - Hard).
+- Hint System ( definition or synonym).
+- Badges and daily streak tracking.
+- Basic settings screen ( theme, sound, account).
+- Tutorial onboarding screen.
+This prototype enabled early testing, refinement and validation of the main gameplay systems.
+
+### Part 3: Final Development Features
+This phase delivered the completed version of WordRush with all advanced, innovative features required for release.
+
+**Final Features Added:**
+- Biometric Login
+- Leaderboard for daily results.
+- Push Notifications for streaks, reminders and daily puzzles.
+- Multi-language support, including full Afrikaans translations.
+- Offline Mode with Sync, allowing gameplay without an internet connection.
+- Final UI improvements, animations and stability fixes.
+These completed features prepared WordRush for deployment to the Google Play Store.
+
+---
 ## 🎥 Demo Video
 
 [![Watch the Demo](https://img.youtube.com/vi/sbE3L70ndtg/0.jpg)](https://youtu.be/sbE3L70ndtg)
