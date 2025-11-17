@@ -13,4 +13,9 @@
     <string name="no_guess_yet">No guess yet</string>
     <string name="definition_hint">Hint: definition</string>
     <string name="synonym_hint">Hint: synonym</string>
+
+    <string name="default_web_client_id">
+    598667406883-9m60b3etnif36nv7uu2gfmfomldo0s43.apps.googleusercontent.com
+</string>
 </resources>
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Size so it looks like your other icons -->
+    <size
+        android:width="96dp"
+        android:height="96dp" />
+
+    <!-- Transparent middle -->
+    <solid android:color="@android:color/transparent" />
+
+    <!-- Soft grey outline for "locked" look -->
+    <stroke
+        android:width="3dp"
+        android:color="#55FFFFFF" />
+
+</shape>

@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".WordleApplication"
@@ -45,6 +46,14 @@
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <!-- Notification receivers -->
+        <receiver
+            android:name=".notifications.DailyWordRushReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".notifications.SpeedleReminderReceiver"
+            android:exported="false" />
         <!-- Profile, Stats, etc. -->
         <activity
             android:name="vcmsa.projects.wordleandroidclient.ProfileActivity"

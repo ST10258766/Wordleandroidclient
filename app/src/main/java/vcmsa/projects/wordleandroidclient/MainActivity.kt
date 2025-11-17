@@ -16,7 +16,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import vcmsa.projects.wordleandroidclient.api.RetrofitClient
+import vcmsa.projects.wordleandroidclient.badges.BadgeConstants
+import vcmsa.projects.wordleandroidclient.badges.BadgeManager
+import vcmsa.projects.wordleandroidclient.badges.BadgePopup
 import vcmsa.projects.wordleandroidclient.multiplayer.*
+import vcmsa.projects.wordleandroidclient.GameMode
 
 import java.util.UUID
 
@@ -146,13 +150,66 @@ class MainActivity : AppCompatActivity() {
             viewModel.gameState.collect { state ->
                 if (!viewModel.isLoadingPreviousResult.value) {
                     when (state) {
-                        GameState.WON  -> StatsManager.recordGame(applicationContext, won = true)
-                        GameState.LOST -> StatsManager.recordGame(applicationContext, won = false)
+                        GameState.WON -> {
+                            // existing stats
+                            StatsManager.recordGame(applicationContext, won = true)
+
+                            // 🔥 Check which mode we’re in
+                            when (viewModel.mode.value) {
+                                GameMode.DAILY -> {
+                                    // 🎖 FIRST DAILY WIN
+                                    val newDaily = BadgeManager.unlock(BadgeConstants.FIRST_DAILY)
+                                    if (newDaily) {
+                                        val badge = BadgeConstants.getBadge(BadgeConstants.FIRST_DAILY)!!
+                                        BadgePopup.show(this@MainActivity, badge)
+                                    }
+
+                                    // 🎖 NEVER GIVE UP (daily) – last row
+                                    val currentRow = viewModel.currentRow()
+                                    if (currentRow == 5) {
+                                        val new = BadgeManager.unlock(BadgeConstants.NEVER_GIVE_UP)
+                                        if (new) {
+                                            val b = BadgeConstants.getBadge(BadgeConstants.NEVER_GIVE_UP)!!
+                                            BadgePopup.show(this@MainActivity, b)
+                                        }
+                                    }
+                                }
+
+                                GameMode.SPEEDLE -> {
+                                    // 🎖 FIRST SPEEDLE WIN
+                                    val newSpeedle = BadgeManager.unlock(BadgeConstants.FIRST_SPEEDLE)
+                                    if (newSpeedle) {
+                                        val badge = BadgeConstants.getBadge(BadgeConstants.FIRST_SPEEDLE)!!
+                                        BadgePopup.show(this@MainActivity, badge)
+                                    }
+
+                                    // 🎖 NEVER GIVE UP (speedle) – last row
+                                    val currentRow = viewModel.currentRow()
+                                    if (currentRow == 5) {
+                                        val new = BadgeManager.unlock(BadgeConstants.NEVER_GIVE_UP)
+                                        if (new) {
+                                            val b = BadgeConstants.getBadge(BadgeConstants.NEVER_GIVE_UP)!!
+                                            BadgePopup.show(this@MainActivity, b)
+                                        }
+                                    }
+                                }
+
+                                else -> {
+                                    // Multiplayer etc – badges handled elsewhere
+                                }
+                            }
+                        }
+
+                        GameState.LOST -> {
+                            StatsManager.recordGame(applicationContext, won = false)
+                        }
+
                         else -> Unit
                     }
                 }
             }
         }
+
 
         // --- Toasts for user messages ---
         lifecycleScope.launch {
@@ -265,12 +322,22 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 if (fb.all { it == "G" } && viewModel.gameState.value == GameState.PLAYING) {
+                    // 🎖 AI CHALLENGER – finished a match vs AI
+                    lifecycleScope.launch {
+                        val new = BadgeManager.unlock(BadgeConstants.AI_CHALLENGER)
+                        if (new) {
+                            val badge = BadgeConstants.getBadge(BadgeConstants.AI_CHALLENGER)!!
+                            BadgePopup.show(this@MainActivity, badge)
+                        }
+                    }
+
                     androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("AI wins ")
                         .setMessage("The word was $localTarget.")
                         .setPositiveButton("OK") { d, _ -> d.dismiss(); finish() }
                         .show()
                 }
+
             },
             onWin = { /* handled above */ },
             playerRowProvider = { viewModel.currentRow() }
@@ -286,6 +353,17 @@ class MainActivity : AppCompatActivity() {
             }
             val fb = LocalWordJudge.feedback(guess, localTarget)
             val won = viewModel.applyLocalFeedbackAndAdvance(fb)
+            if (won || viewModel.gameState.value == GameState.LOST) {
+                // 🎖 AI CHALLENGER – match finished (win or lose)
+                lifecycleScope.launch {
+                    val new = BadgeManager.unlock(BadgeConstants.AI_CHALLENGER)
+                    if (new) {
+                        val badge = BadgeConstants.getBadge(BadgeConstants.AI_CHALLENGER)!!
+                        BadgePopup.show(this@MainActivity, badge)
+                    }
+                }
+            }
+
             if (won) {
                 androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("You win 🎉")
@@ -299,6 +377,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton("OK") { d, _ -> d.dismiss(); finish() }
                     .show()
             }
+
         }
     }
 

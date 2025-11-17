@@ -65,5 +65,86 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
+        <!-- Notifications  -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_section_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Push Notifications"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <Switch
+                android:id="@+id/swNotifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- Test notification -->
+        <LinearLayout
+            android:id="@+id/rowTestNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_section_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Send test notification"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap"
+                android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+        <!-- Trigger Now (debug) -->
+        <LinearLayout
+            android:id="@+id/rowTriggerNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_section_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Trigger both reminders (debug)"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Now"
+                android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+
+
     </LinearLayout>
 </ScrollView>

@@ -67,6 +67,7 @@ dependencies {
     // --- Google Sign-In ---
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("androidx.lifecycle:lifecycle-process:2.9.4")
+    implementation("androidx.compose.material3:material3:1.4.0")
 
     // --- Testing ---
     testImplementation("junit:junit:4.13.2")
@@ -84,5 +85,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+//Konfetti
+    implementation("nl.dionsegijn:konfetti-xml:2.0.2")
 
 }
