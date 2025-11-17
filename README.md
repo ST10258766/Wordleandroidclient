@@ -251,6 +251,7 @@ This phase focused on defining the vision, design, user experience, and architec
 - Mode planning: Daily, Speedle and Multiplayer.
 - Feature mapping: Hints, badges, streaks and settings.
 - Wireframes and conceptual UI design.
+  
 This stage ensured a solid blueprint before development.
 
 ### Part 2: Prototype Development 
@@ -266,6 +267,7 @@ This stage focused on building the first functional version of WordRush to demon
 - Badges and daily streak tracking.
 - Basic settings screen ( theme, sound, account).
 - Tutorial onboarding screen.
+  
 This prototype enabled early testing, refinement and validation of the main gameplay systems.
 
 ### Part 3: Final Development Features
@@ -278,6 +280,7 @@ This phase delivered the completed version of WordRush with all advanced, innova
 - Multi-language support, including full Afrikaans translations.
 - Offline Mode with Sync, allowing gameplay without an internet connection.
 - Final UI improvements, animations and stability fixes.
+  
 These completed features prepared WordRush for deployment to the Google Play Store.
 
 ---
