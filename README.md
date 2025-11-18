@@ -23,11 +23,12 @@ Built in **Kotlin**, powered by **Firebase**, and connected via a **Render-hoste
 10. [Functional Requirements](#functional-requirements)  
 11. [Non-Functional Requirements](#non-functional-requirements)  
 12. [GitHub and CI/CD](#github-and-cicd)
-13. [Release Notes](#release-notes)
-14. [Demo Video](#demo-video)  
-15. [Repository Links](#repository-links)  
-16. [References](#references)  
-17. [AI Usage Disclosure](#ai-usage-disclosure)
+13. [Use of GitHub and GitHub actions](#use-of-github-and-github-actions)
+14. [Release Notes](#release-notes)
+15. [Demo Video](#demo-video)  
+16. [Repository Links](#repository-links)  
+17. [References](#references)  
+18. [AI Usage Disclosure](#ai-usage-disclosure)
 
 ---
 
@@ -238,6 +239,17 @@ WordRush follows a three-layer cloud architecture:
 
 Both use **GitHub Actions** for build automation.  
 Render auto-deploys backend changes on merge to `main`.
+
+---
+## 💻 Use of GitHub and GitHub actions: 
+
+- Used GitHub as the main version-control platform for all source code.
+- Maintained separate repositories for Android (Kotlin) and the Node.js API.
+- Used branches and commits to manage development in a structured way.
+- Implemented GitHub Actions for automated CI checks (builds, linting, workflow validation).
+- Enabled automatic backend deployment to Render on every merge to main.
+- Improved reliability and reduced manual errors through continuous integration and delivery.
+- Ensured a professional, consistent, and streamlined development process.
 
 ---
 ## 📝 Release Notes 
