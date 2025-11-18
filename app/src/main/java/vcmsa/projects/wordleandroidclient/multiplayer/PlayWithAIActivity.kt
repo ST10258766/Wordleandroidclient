@@ -25,7 +25,7 @@ class PlayWithAIActivity : AppCompatActivity() {
                 else -> AiDifficulty.MEDIUM
             }
             // For v1 we’ll launch your existing MainActivity with flags,
-            // and later we’ll switch to a dedicated MultiplayerGameActivity.
+
             startActivity(Intent(this, vcmsa.projects.wordleandroidclient.MainActivity::class.java).apply {
                 putExtra("mode", "AI_MULTIPLAYER")
                 putExtra("aiDifficulty", diff.name)

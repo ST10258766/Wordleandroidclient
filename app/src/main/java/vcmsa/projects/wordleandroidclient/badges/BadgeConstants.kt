@@ -12,7 +12,7 @@ object BadgeConstants {
     const val AI_CHALLENGER = "AI_CHALLENGER"
     const val NOTIFICATION_GURU = "NOTIFICATION_GURU"
 
-    /** All badges living here */
+    //All Badges Available
     val allBadges = listOf(
         Badge(
             id = FIRST_DAILY,

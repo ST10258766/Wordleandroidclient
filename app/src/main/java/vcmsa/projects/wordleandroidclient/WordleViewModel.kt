@@ -114,7 +114,9 @@ class WordleViewModel(
     //Haptics functions
     private fun hapticTick() {
         viewModelScope.launch {
-            if (vcmsa.projects.wordleandroidclient.data.SettingsStore.hapticsFlow(appContext).first()) {
+            if (vcmsa.projects.wordleandroidclient.data.SettingsStore.hapticsFlow(appContext)
+                    .first()
+            ) {
                 Haptics.tick(appContext)
             }
         }
@@ -122,7 +124,9 @@ class WordleViewModel(
 
     private fun hapticSuccess() {
         viewModelScope.launch {
-            if (vcmsa.projects.wordleandroidclient.data.SettingsStore.hapticsFlow(appContext).first()) {
+            if (vcmsa.projects.wordleandroidclient.data.SettingsStore.hapticsFlow(appContext)
+                    .first()
+            ) {
                 Haptics.success(appContext)
             }
         }
@@ -248,7 +252,6 @@ class WordleViewModel(
     }
 
 
-
     private fun loadMyResultAndRender(body: MyResultResponse, length: Int) {
         _isLoadingPreviousResult.value = true
 
@@ -278,8 +281,11 @@ class WordleViewModel(
                 Log.d("WordleVM", "Cached answer from previous result: ${body.answer}")
             }
 
-            val def = runCatching { wordApi.getDefinition(body.lang, body.date).body()?.definition?.definition }.getOrNull()
-            val syn = runCatching { wordApi.getSynonym(body.lang, body.date).body()?.synonym }.getOrNull()
+            val def = runCatching {
+                wordApi.getDefinition(body.lang, body.date).body()?.definition?.definition
+            }.getOrNull()
+            val syn =
+                runCatching { wordApi.getSynonym(body.lang, body.date).body()?.synonym }.getOrNull()
             _summary.value = EndGameSummary(
                 definition = def,
                 synonym = syn,
@@ -340,7 +346,6 @@ class WordleViewModel(
             null
         }
     }
-
 
 
     private suspend fun submitDailyResult(won: Boolean): String? {
@@ -464,12 +469,14 @@ class WordleViewModel(
             val start = row * len
             val rowFeedback = mutableListOf<String>()
             for (i in 0 until len) {
-                rowFeedback.add(when (_boardStates.value[start + i]) {
-                    TileState.CORRECT -> "G"
-                    TileState.PRESENT -> "Y"
-                    TileState.ABSENT -> "A"
-                    else -> "A"
-                })
+                rowFeedback.add(
+                    when (_boardStates.value[start + i]) {
+                        TileState.CORRECT -> "G"
+                        TileState.PRESENT -> "Y"
+                        TileState.ABSENT -> "A"
+                        else -> "A"
+                    }
+                )
             }
             result.add(rowFeedback)
         }
@@ -502,7 +509,9 @@ class WordleViewModel(
 
                 _remainingSeconds.value = body.durationSec
                 _preCountdownSeconds.value = countdownSec
-                while ((_preCountdownSeconds.value ?: 0) > 0 && _gameState.value == GameState.PLAYING) {
+                while ((_preCountdownSeconds.value
+                        ?: 0) > 0 && _gameState.value == GameState.PLAYING
+                ) {
                     delay(1000)
                     _preCountdownSeconds.value = (_preCountdownSeconds.value ?: 0) - 1
                 }
@@ -825,6 +834,7 @@ class WordleViewModel(
         }
         _boardStates.value = newStates
     }
+
     private suspend fun writeResultToFirestore(won: Boolean) {
         try {
             val user = FirebaseAuth.getInstance().currentUser ?: return
@@ -850,12 +860,13 @@ class WordleViewModel(
 
             Log.e("WordleVM", "Writing to Firestore: $docId")
             db.collection("results").document(docId).set(payload).await()
-            Log.e("WordleVM", "✅ Successfully wrote to Firestore")
+            Log.e("WordleVM", " Successfully wrote to Firestore")
 
         } catch (e: Exception) {
-            Log.e("WordleVM", "❌ Firestore write failed: ${e.message}", e)
+            Log.e("WordleVM", " Firestore write failed: ${e.message}", e)
         }
     }
+
     private fun advanceOrLoseDaily() {
         if (currentGuessRow < 5) {
             currentGuessRow++
@@ -869,7 +880,8 @@ class WordleViewModel(
             val feedbackRows = extractFeedbackRows()
 
             // MOVE THIS LINE HERE (before the viewModelScope.launch)
-            val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
+            val userId =
+                com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
 
             viewModelScope.launch {
                 writeResultToFirestore(won = false)
@@ -877,7 +889,11 @@ class WordleViewModel(
                 submitDailyResult(won = false)
 
                 todayDate?.let {
-                    SettingsStore.setLastPlayedDate(appContext, it, userId)  // NOW userId is in scope
+                    SettingsStore.setLastPlayedDate(
+                        appContext,
+                        it,
+                        userId
+                    )  // NOW userId is in scope
                     SettingsStore.saveLastGameState(appContext, guesses, feedbackRows, userId)
                 }
 
@@ -891,6 +907,7 @@ class WordleViewModel(
             }
         }
     }
+
     private fun loadEndSummaryDaily(won: Boolean, word: String?) {
         val meta = _today.value ?: return
         viewModelScope.launch {
@@ -927,16 +944,17 @@ class WordleViewModel(
             }
         }
     }
+
     fun testFirestoreWrite() {
         viewModelScope.launch {
             try {
                 val user = FirebaseAuth.getInstance().currentUser
                 if (user == null) {
-                    Log.e("FIRESTORE_TEST", "❌ No user signed in")
+                    Log.e("FIRESTORE_TEST", " No user signed in")
                     return@launch
                 }
 
-                Log.e("FIRESTORE_TEST", "✅ User signed in: ${user.uid}")
+                Log.e("FIRESTORE_TEST", " User signed in: ${user.uid}")
 
                 val db = FirebaseFirestore.getInstance()
                 val testDoc = hashMapOf(
@@ -947,10 +965,10 @@ class WordleViewModel(
 
                 Log.e("FIRESTORE_TEST", "Writing test document...")
                 db.collection("test_collection").document("test_doc").set(testDoc).await()
-                Log.e("FIRESTORE_TEST", "✅✅✅ Successfully wrote to Firestore!")
+                Log.e("FIRESTORE_TEST", " Successfully wrote to Firestore!")
 
             } catch (e: Exception) {
-                Log.e("FIRESTORE_TEST", "❌❌❌ Firestore write failed: ${e.message}", e)
+                Log.e("FIRESTORE_TEST", " Firestore write failed: ${e.message}", e)
             }
         }
     }
@@ -971,7 +989,8 @@ class WordleViewModel(
             try {
                 val resp = wordApi.getDefinition(meta.lang, meta.date)
                 if (resp.isSuccessful) {
-                    _hintMessage.value = resp.body()?.definition?.definition ?: "No definition found."
+                    _hintMessage.value =
+                        resp.body()?.definition?.definition ?: "No definition found."
                 } else {
                     _userMessage.value = "Couldn't load definition."
                 }
@@ -1057,55 +1076,27 @@ class WordleViewModel(
         viewModelScope.launch {
             when (val result = offlineSyncManager.syncUnsyncedGuesses()) {
                 is SyncResult.Success -> {
-                    _userMessage.value = "Synced ${result.count} game(s) ✅"
+                    _userMessage.value = "Synced ${result.count} game(s) "
                     Log.d("WordleVM", "Sync successful: ${result.count}")
                 }
+
                 is SyncResult.PartialSuccess -> {
-                    _userMessage.value = "Synced ${result.synced}/${result.synced + result.failed} game(s)"
-                    Log.w("WordleVM", "Partial sync: ${result.synced} success, ${result.failed} failed")
+                    _userMessage.value =
+                        "Synced ${result.synced}/${result.synced + result.failed} game(s)"
+                    Log.w(
+                        "WordleVM",
+                        "Partial sync: ${result.synced} success, ${result.failed} failed"
+                    )
                 }
+
                 is SyncResult.NoInternet -> {
                     Log.d("WordleVM", "No internet for sync")
                 }
+
                 is SyncResult.NothingToSync -> {
                     Log.d("WordleVM", "Nothing to sync")
                 }
             }
         }
     }
-
-//    private suspend fun continueAfterMetadataLoaded(meta: WordTodayResponse) {
-//
-//        val user = FirebaseAuth.getInstance().currentUser
-//
-//        // Same logic you already have
-//        if (user != null) {
-//            val r = wordApi.getMyResult(meta.date, meta.lang)
-//            if (r.isSuccessful && r.body() != null) {
-//                loadMyResultAndRender(r.body()!!, meta.length)
-//                return
-//            }
-//        } else {
-//            val last = SettingsStore.getLastPlayedDate(appContext)
-//            if (last == meta.date) {
-//                val savedState = SettingsStore.getLastGameState(appContext)
-//                if (savedState != null) {
-//                    val (guesses, feedbackRows) = savedState
-//                    resetBoard(meta.length)
-//                    guesses.forEachIndexed { row, guess ->
-//                        writeGuessRow(row, guess)
-//                        applyFeedbackRow(row, feedbackRows[row])
-//                    }
-//                }
-//                _gameState.value = GameState.LOST
-//                _userMessage.value = "You've already played today offline."
-//                return
-//            }
-//        }
-//
-//        // Blank new game
-//        resetBoard(meta.length)
-//        _gameState.value = GameState.PLAYING
-//    }
-
 }

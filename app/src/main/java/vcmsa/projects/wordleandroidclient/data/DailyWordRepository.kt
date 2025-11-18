@@ -14,8 +14,8 @@ class DailyWordRepository(
     private val db = WordleDatabase.getDatabase(context)
     private val cachedWordDao = db.cachedDailyWordDao()
 
-    /**
-     * Pre-fetch today's word and cache it
+    /*
+     Pre-fetch today's word and cache it
      * Call this when app starts
      */
     suspend fun preFetchTodaysWord(lang: String = "en-ZA"): WordTodayResponse? {
@@ -42,7 +42,7 @@ class DailyWordRepository(
             if (response.isSuccessful && meta != null) {
                 // Cache it
                 cacheWord(meta)
-                Log.d("DailyWordRepo", "✅ Pre-fetched and cached: ${meta.date}, length: ${meta.length}")
+                Log.d("DailyWordRepo", " Pre-fetched and cached: ${meta.date}, length: ${meta.length}")
                 meta
             } else {
                 Log.e("DailyWordRepo", "Failed to fetch: ${response.code()}")
@@ -79,7 +79,7 @@ class DailyWordRepository(
         if (cached != null) {
             val updated = cached.copy(answer = answer)
             cachedWordDao.insertCachedWord(updated)
-            Log.d("DailyWordRepo", "✅ Updated cached word with answer for offline play")
+            Log.d("DailyWordRepo", " Updated cached word with answer for offline play")
         } else {
             Log.w("DailyWordRepo", "Cannot update answer - word not cached yet")
         }
@@ -113,7 +113,7 @@ class DailyWordRepository(
     }
 
     /**
-     * Clean up old cached words (optional, for housekeeping)
+     * Clean up old cached words
      */
     suspend fun cleanupOldCache(daysToKeep: Int = 7) {
         val cutoffTimestamp = System.currentTimeMillis() - (daysToKeep * 24 * 60 * 60 * 1000L)

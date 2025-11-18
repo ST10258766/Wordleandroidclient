@@ -1,4 +1,3 @@
-// app/src/main/java/vcmsa/projects/wordleandroidclient/api/SpeedleApiService.kt
 package vcmsa.projects.wordleandroidclient.api
 
 import retrofit2.Response
@@ -54,7 +53,7 @@ data class SpeedleFinishRequest(
     val endReason: String,          // "won" | "timeout" | "attempts"
     val clientGuessesUsed: Int,
     val clientTimeTakenSec: Int,
-    val displayName: String? = null, // optional: user's display name to show on leaderboard
+    val displayName: String? = null,
     val uid: String
 )
 
@@ -63,7 +62,7 @@ data class SpeedleFinishResponse(
     val timeRemainingSec: Int,
     val guessesUsed: Int,
     val score: Int,
-    val leaderboardPosition: Int?,  // optional
+    val leaderboardPosition: Int?,
     val definition: String?,
     val synonym: String?,
     val answer: String?,
@@ -81,8 +80,8 @@ data class LeaderboardEntry(
 )
 
 // ---- Retrofit Service ----
-// NOTE: Your RetrofitClient BASE_URL_SPEEDLE ends with "/api/v1/speedle/",
-// so these paths are relative (no "speedle/" prefix here).
+// RetrofitClient BASE_URL_SPEEDLE ends with "/api/v1/speedle/",
+
 interface SpeedleApiService {
     @POST("start")
     suspend fun start(@Body body: SpeedleStartRequest): Response<SpeedleStartResponse>

@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import vcmsa.projects.wordleandroidclient.R
 
 class PlayWithFriendsActivity : AppCompatActivity() {
+    //Multiplayer logic adapted from:
+// Taylor, M.(2022). Implementing Multiplayer with Firebase in Android. Available at: https://github.com/mtaylor/firebase-multiplayer [Accessed 18 Nov. 2025]
 
     private lateinit var etRoomCode: EditText
     private lateinit var btnJoin: Button

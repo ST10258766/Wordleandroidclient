@@ -6,15 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-//data class WordTodayResponse(
-//    val date: String,
-//    val lang: String,
-//    val mode: String,
-//    val length: Int,
-//    val hasDefinition: Boolean,
-//    val hasSynonym: Boolean,
-//    val played: Boolean = false
-//)
+
 
 data class GuessRequest(
     val guess: String,

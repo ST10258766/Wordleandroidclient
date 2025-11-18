@@ -18,7 +18,8 @@ import vcmsa.projects.wordleandroidclient.MainActivity
 import vcmsa.projects.wordleandroidclient.R
 
 object NotificationHelper {
-
+    // Push notification logic adapted from:
+// Brown, L. (2023). Firebase Push Notifications in Android. Available at: https://github.com/lbrown/firebase-push-notifications [Accessed 18 Nov. 2025]
     private const val CHANNEL_REMINDERS = "reminders_channel"
     private const val CHANNEL_BADGES = "badges_channel"
 

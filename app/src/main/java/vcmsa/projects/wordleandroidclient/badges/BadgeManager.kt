@@ -9,7 +9,7 @@ object BadgeManager {
     private val auth get() = FirebaseAuth.getInstance()
     private val db get() = FirebaseFirestore.getInstance()
 
-    /** Check if badge already unlocked */
+    //Check if badge already unlocked
     suspend fun isUnlocked(badgeId: String): Boolean {
         val uid = auth.currentUser?.uid ?: return false
         val snap = db.collection("profiles")
@@ -21,7 +21,7 @@ object BadgeManager {
         return snap.exists() && (snap.getBoolean("unlocked") == true)
     }
 
-    /** Attempt to unlock badge */
+   // Attempt to unlock badge
     suspend fun unlock(badgeId: String): Boolean {
         val uid = auth.currentUser?.uid ?: return false
 
@@ -39,7 +39,7 @@ object BadgeManager {
         return true
     }
 
-    /** Return list with unlocked/locked status */
+    // Return list with unlocked/locked status
     suspend fun getBadgeStates(): List<BadgeDisplay> {
         val uid = auth.currentUser?.uid ?: return emptyList()
 

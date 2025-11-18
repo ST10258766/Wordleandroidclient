@@ -81,7 +81,7 @@ class DashboardActivity : AppCompatActivity() {
         val btnHowToTop      = findViewById<View>(R.id.btnHowToTop)
         val btnSpeedleStart  = findViewById<Button>(R.id.btnSpeedleStart)
 
-        // Show bottom-nav icons in their own neon colours (no tint)
+        // Show bottom-nav icons in their own neon colours
         bottomNav.itemIconTintList = null
 
         // Greeting text + time-of-day flavour
@@ -210,7 +210,7 @@ class DashboardActivity : AppCompatActivity() {
         startResetCountdown()
         refreshDailyCardState()
 
-        // 🔥 Simple fade-up animations when screen opens
+        //  Simple fade-up animations when screen opens
         tvGreeting.fadeInUp(0)
         chipStreak.fadeInUp(40)
         quickActionsRow.fadeInUp(80)

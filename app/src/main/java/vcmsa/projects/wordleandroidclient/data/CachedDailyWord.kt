@@ -3,9 +3,8 @@ package vcmsa.projects.wordleandroidclient.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Cached daily word metadata for offline play
- */
+//Cached daily word metadata for offline play
+
 @Entity(tableName = "cached_daily_words")
 data class CachedDailyWord(
     @PrimaryKey

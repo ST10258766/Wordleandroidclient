@@ -18,7 +18,7 @@ object StatsManager {
     fun recordGame(ctx: Context, won: Boolean) {
         val sp = ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
 
-        // --- basic counts (same as before) ---
+        // --- basic counts  ---
         val played = sp.getInt(K_PLAYED, 0) + 1
         val wins   = sp.getInt(K_WINS, 0) + if (won) 1 else 0
         val losses = sp.getInt(K_LOSSES, 0) + if (won) 0 else 1

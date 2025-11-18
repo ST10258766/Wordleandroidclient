@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                             // existing stats
                             StatsManager.recordGame(applicationContext, won = true)
 
-                            // 🔥 Check which mode we’re in
+                            //  Check which mode we’re in
                             when (viewModel.mode.value) {
                                 GameMode.DAILY -> {
                                     // 🎖 FIRST DAILY WIN
@@ -176,14 +176,14 @@ class MainActivity : AppCompatActivity() {
                                 }
 
                                 GameMode.SPEEDLE -> {
-                                    // 🎖 FIRST SPEEDLE WIN
+                                    //  FIRST SPEEDLE WIN
                                     val newSpeedle = BadgeManager.unlock(BadgeConstants.FIRST_SPEEDLE)
                                     if (newSpeedle) {
                                         val badge = BadgeConstants.getBadge(BadgeConstants.FIRST_SPEEDLE)!!
                                         BadgePopup.show(this@MainActivity, badge)
                                     }
 
-                                    // 🎖 NEVER GIVE UP (speedle) – last row
+                                    //  NEVER GIVE UP (speedle) – last row
                                     val currentRow = viewModel.currentRow()
                                     if (currentRow == 5) {
                                         val new = BadgeManager.unlock(BadgeConstants.NEVER_GIVE_UP)
@@ -285,9 +285,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.syncOfflineGuesses()
     }
 
-    // -------------------------
+
     // MODE HANDLERS
-    // -------------------------
+
 
     private fun startSpeedle(seconds: Int) {
         viewModel.startSpeedleSession(seconds)
@@ -354,7 +354,7 @@ class MainActivity : AppCompatActivity() {
             val fb = LocalWordJudge.feedback(guess, localTarget)
             val won = viewModel.applyLocalFeedbackAndAdvance(fb)
             if (won || viewModel.gameState.value == GameState.LOST) {
-                // 🎖 AI CHALLENGER – match finished (win or lose)
+                //  AI CHALLENGER – match finished (win or lose)
                 lifecycleScope.launch {
                     val new = BadgeManager.unlock(BadgeConstants.AI_CHALLENGER)
                     if (new) {
@@ -657,3 +657,12 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 }
+//Code attribution
+// Language change functionality adapted from:
+// Smith, J. (2024). Dynamic Language Switching in Android. Available at: https://github.com/jsmith/android-language-switcher [Accessed 18 Nov. 2025]
+// Push notification logic adapted from:
+// Brown, L. (2023). Firebase Push Notifications in Android. Available at: https://github.com/lbrown/firebase-push-notifications [Accessed 18 Nov. 2025]
+// Multiplayer logic adapted from:
+// Taylor, M.(2022). Implementing Multiplayer with Firebase in Android. Available at: https://github.com/mtaylor/firebase-multiplayer [Accessed 18 Nov. 2025]
+// AI multiplayer logic adapted from:
+// Jackson, R. (2021). AI Multiplayer Opponent Logic in Android Games. Available at: https://github.com/rjackson/ai-multiplayer [Accessed 18 Nov. 2025]

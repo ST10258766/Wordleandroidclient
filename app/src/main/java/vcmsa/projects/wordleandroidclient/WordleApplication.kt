@@ -63,7 +63,7 @@ class WordleApplication : Application() {
         applyLanguage(finalCode)
 
 
-        // 1️⃣ Apply saved dark / light theme at startup (this replaces MyApp)
+        //  Apply saved dark / light theme at startup
         val isDark = runBlocking {
             SettingsStore.darkThemeFlow(this@WordleApplication).first()
         }
@@ -72,10 +72,10 @@ class WordleApplication : Application() {
             else AppCompatDelegate.MODE_NIGHT_NO
         )
 
-        // 2️⃣ Create notification channels once for the whole app
+        // Create notification channels once for the whole app
         NotificationHelper.createChannels(this)
 
-        // 3️⃣ Pre-fetch today's word + sync any offline guesses (your original logic)
+        // Pre-fetch today's word + sync any offline guesses
         ProcessLifecycleOwner.get().lifecycleScope.launch {
             try {
                 val dailyWordRepo =
@@ -83,13 +83,13 @@ class WordleApplication : Application() {
 
                 Log.d("WordleApp", "Pre-fetching today's word...")
                 dailyWordRepo.preFetchTodaysWord()
-                Log.d("WordleApp", "✅ Pre-fetch complete")
+                Log.d("WordleApp", " Pre-fetch complete")
 
                 val syncManager =
                     OfflineSyncManager(applicationContext, RetrofitClient.wordService)
                 Log.d("WordleApp", "Syncing offline guesses...")
                 syncManager.syncUnsyncedGuesses()
-                Log.d("WordleApp", "✅ Sync complete")
+                Log.d("WordleApp", "Sync complete")
 
             } catch (e: Exception) {
                 Log.e("WordleApp", "Error during initialization: ${e.message}", e)

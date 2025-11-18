@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.random.Random
 
-class AiOpponent(
+class AiOpponent( // AI multiplayer logic adapted from:
+// Jackson, R. (2021). AI Multiplayer Opponent Logic in Android Games. Available at: https://github.com/rjackson/ai-multiplayer [Accessed 18 Nov. 2025]
     private val appContext: Context,
     private val scope: CoroutineScope,
     private val difficulty: AiDifficulty,

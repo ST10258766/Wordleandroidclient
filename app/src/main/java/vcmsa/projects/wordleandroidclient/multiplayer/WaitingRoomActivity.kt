@@ -81,7 +81,7 @@ class WaitingRoomActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
 
-        // 🔥 Decide and share the target word via Firestore
+        //  Decide and share the target word via Firestore
         lifecycleScope.launch {
             val db = FirebaseFirestore.getInstance()
             val roomRef = db.collection("rooms").document(roomCode)
