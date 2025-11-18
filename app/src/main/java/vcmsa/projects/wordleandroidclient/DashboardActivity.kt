@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import vcmsa.projects.wordleandroidclient.data.SettingsStore
 import vcmsa.projects.wordleandroidclient.multiplayer.PlayWithAIActivity
 
 class DashboardActivity : AppCompatActivity() {
@@ -54,55 +55,68 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun refreshDailyCardState() {
         Log.e("DASHBOARD", "refreshDailyCardState started")
+
         lifecycleScope.launch {
             var played = false
             val today = getTodayIso()
 
             try {
                 val user = auth.currentUser
-                if (user != null) {
-                    // 1. Quick local check first (instant)
-                    val localPlayed = vcmsa.projects.wordleandroidclient.data.SettingsStore
-                        .hasUserPlayedToday(this@DashboardActivity, today, user.uid)
 
-                    Log.e("DASHBOARD", "Local check: played=$localPlayed")
-
-                    if (localPlayed) {
-                        played = true
-                        Log.e("DASHBOARD", "Using local result: played=true")
-                    } else {
-                        // 2. Check Firestore directly
-                        Log.e("DASHBOARD", "Checking Firestore...")
-                        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                        val docId = "${today}_en-ZA_${user.uid}"
-
-                        try {
-                            val doc = db.collection("results").document(docId).get().await()
-                            val firestorePlayed = doc.exists()
-                            Log.e("DASHBOARD", "Firestore says: played=$firestorePlayed")
-
-                            if (firestorePlayed) {
-                                // Sync local storage
-                                vcmsa.projects.wordleandroidclient.data.SettingsStore
-                                    .setLastPlayedDate(this@DashboardActivity, today, user.uid)
-                                played = true
-                                Log.e("DASHBOARD", "Synced local from Firestore")
-                            } else {
-                                played = false
-                            }
-                        } catch (e: Exception) {
-                            Log.e("DASHBOARD", "Firestore error: ${e.message}")
-                            // On error, trust local
-                            played = localPlayed
-                        }
-                    }
-                } else {
-                    // Unsigned user: only local
-                    val lastPlayed = vcmsa.projects.wordleandroidclient.data.SettingsStore
-                        .getLastPlayedDate(this@DashboardActivity)
-                    played = (lastPlayed == today)
-                    Log.e("DASHBOARD", "Anonymous user: played=$played")
+                if (user == null) {
+                    // Should NEVER happen since login is required
+                    Log.e("DASHBOARD", "ERROR: refreshDailyCardState called with NO logged-in user!")
+                    applyDailyCardState(false)
+                    return@launch
                 }
+
+                val uid = user.uid
+                Log.e("DASHBOARD", "Checking for user: $uid")
+
+                // 1. FAST LOCAL CHECK (per-user)
+                val localPlayed = SettingsStore.hasUserPlayedToday(
+                    this@DashboardActivity,
+                    today,
+                    uid
+                )
+
+                Log.e("DASHBOARD", "Local check: played=$localPlayed")
+
+                if (localPlayed) {
+                    played = true
+                    Log.e("DASHBOARD", "Using LOCAL state (played=true)")
+                } else {
+                    // 2. CHECK FIRESTORE (slow)
+                    Log.e("DASHBOARD", "Checking Firestore for doc...")
+
+                    val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    val docId = "${today}_en-ZA_${uid}"
+
+                    try {
+                        val doc = db.collection("results").document(docId).get().await()
+                        val firestorePlayed = doc.exists()
+
+                        Log.e("DASHBOARD", "Firestore says: played=$firestorePlayed")
+
+                        if (firestorePlayed) {
+                            // Sync local so next time it's instant
+                            SettingsStore.setLastPlayedDate(
+                                this@DashboardActivity,
+                                today,
+                                uid
+                            )
+                            played = true
+                        } else {
+                            played = false
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e("DASHBOARD", "Firestore error: ${e.message}")
+                        // fall back to local
+                        played = localPlayed
+                    }
+                }
+
             } catch (e: Exception) {
                 Log.e("DASHBOARD", "Error: ${e.message}", e)
                 played = false
@@ -112,6 +126,7 @@ class DashboardActivity : AppCompatActivity() {
             applyDailyCardState(played)
         }
     }
+
     private fun applyDailyCardState(played: Boolean) {
         Log.e("DASHBOARD", "applyDailyCardState: played=$played")
         if (played) {
@@ -165,7 +180,7 @@ class DashboardActivity : AppCompatActivity() {
             bottomNav.selectedItemId = R.id.nav_multiplayer
         }
         findViewById<View>(R.id.qaLeaderboard).setOnClickListener {
-            showComingSoon("Leaderboard")
+            startActivity(Intent(this, vcmsa.projects.wordleandroidclient.leaderboard.LeaderboardActivity::class.java))
         }
         findViewById<View>(R.id.qaStats).setOnClickListener {
             showComingSoon("Stats")
@@ -206,7 +221,7 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_leaderboard -> {
-                    showComingSoon("Leaderboard")
+                    startActivity(Intent(this, vcmsa.projects.wordleandroidclient.leaderboard.LeaderboardActivity::class.java))
                     true
                 }
                 R.id.nav_profile -> {

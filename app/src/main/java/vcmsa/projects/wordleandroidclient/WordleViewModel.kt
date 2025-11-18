@@ -385,7 +385,7 @@ class WordleViewModel(
             val db = FirebaseFirestore.getInstance()
             val docId = "${date}_${lang}_${uid}"
 
-            val feedbackRows = extractFeedbackRows() // already in this class
+            val feedbackRows = extractFeedbackRows()
 
             val payload = hashMapOf(
                 "uid" to uid,
@@ -521,6 +521,9 @@ class WordleViewModel(
         val wordId = speedleWordId
         val duration = speedleDuration
 
+        val user = FirebaseAuth.getInstance().currentUser
+        val uid = user?.uid ?: "unknown"
+
         viewModelScope.launch {
             try {
                 val resp = speedleApi.finish(
@@ -529,7 +532,8 @@ class WordleViewModel(
                         endReason = endReason,
                         clientGuessesUsed = speedleGuessesUsed,
                         clientTimeTakenSec = duration - (_remainingSeconds.value ?: 0),
-                        displayName = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.displayName
+                        displayName = user?.displayName ?: user?.email ?: "Player",
+                        uid = uid
                     )
                 )
 
@@ -874,7 +878,7 @@ class WordleViewModel(
 
                 todayDate?.let {
                     SettingsStore.setLastPlayedDate(appContext, it, userId)  // NOW userId is in scope
-                    SettingsStore.saveLastGameState(appContext, guesses, feedbackRows)
+                    SettingsStore.saveLastGameState(appContext, guesses, feedbackRows, userId)
                 }
 
                 val meta = _today.value
@@ -1070,38 +1074,38 @@ class WordleViewModel(
         }
     }
 
-    private suspend fun continueAfterMetadataLoaded(meta: WordTodayResponse) {
-
-        val user = FirebaseAuth.getInstance().currentUser
-
-        // Same logic you already have
-        if (user != null) {
-            val r = wordApi.getMyResult(meta.date, meta.lang)
-            if (r.isSuccessful && r.body() != null) {
-                loadMyResultAndRender(r.body()!!, meta.length)
-                return
-            }
-        } else {
-            val last = SettingsStore.getLastPlayedDate(appContext)
-            if (last == meta.date) {
-                val savedState = SettingsStore.getLastGameState(appContext)
-                if (savedState != null) {
-                    val (guesses, feedbackRows) = savedState
-                    resetBoard(meta.length)
-                    guesses.forEachIndexed { row, guess ->
-                        writeGuessRow(row, guess)
-                        applyFeedbackRow(row, feedbackRows[row])
-                    }
-                }
-                _gameState.value = GameState.LOST
-                _userMessage.value = "You've already played today offline."
-                return
-            }
-        }
-
-        // Blank new game
-        resetBoard(meta.length)
-        _gameState.value = GameState.PLAYING
-    }
+//    private suspend fun continueAfterMetadataLoaded(meta: WordTodayResponse) {
+//
+//        val user = FirebaseAuth.getInstance().currentUser
+//
+//        // Same logic you already have
+//        if (user != null) {
+//            val r = wordApi.getMyResult(meta.date, meta.lang)
+//            if (r.isSuccessful && r.body() != null) {
+//                loadMyResultAndRender(r.body()!!, meta.length)
+//                return
+//            }
+//        } else {
+//            val last = SettingsStore.getLastPlayedDate(appContext)
+//            if (last == meta.date) {
+//                val savedState = SettingsStore.getLastGameState(appContext)
+//                if (savedState != null) {
+//                    val (guesses, feedbackRows) = savedState
+//                    resetBoard(meta.length)
+//                    guesses.forEachIndexed { row, guess ->
+//                        writeGuessRow(row, guess)
+//                        applyFeedbackRow(row, feedbackRows[row])
+//                    }
+//                }
+//                _gameState.value = GameState.LOST
+//                _userMessage.value = "You've already played today offline."
+//                return
+//            }
+//        }
+//
+//        // Blank new game
+//        resetBoard(meta.length)
+//        _gameState.value = GameState.PLAYING
+//    }
 
 }

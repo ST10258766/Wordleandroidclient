@@ -1,10 +1,10 @@
 package vcmsa.projects.wordleandroidclient.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -22,13 +22,17 @@ object SettingsStore {
     private val TODAY_META_JSON = stringPreferencesKey("today_meta_json")
     private val TODAY_META_DATE = stringPreferencesKey("today_meta_date")
 
-    // -------- Daily Lock + Game State Tracking --------
-    private val LAST_PLAYED_DATE = stringPreferencesKey("last_played_date")
-    private val LAST_PLAYED_USER = stringPreferencesKey("last_played_user")
-    private val LAST_GUESSES = stringPreferencesKey("last_game_guesses")
-    private val LAST_FEEDBACK_ROWS = stringPreferencesKey("last_game_feedback_rows")
+    // -------- Dynamic per-user keys --------
+    private fun keyLastPlayed(uid: String) =
+        stringPreferencesKey("last_played_date_$uid")
 
-    // --- FLOWS ---
+    private fun keyGameGuesses(uid: String) =
+        stringPreferencesKey("last_guesses_$uid")
+
+    private fun keyGameFeedback(uid: String) =
+        stringPreferencesKey("last_feedback_$uid")
+
+    // -------- Basic Settings --------
     fun darkThemeFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[DARK_THEME] ?: false }
 
@@ -41,7 +45,6 @@ object SettingsStore {
     fun notificationsFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[NOTIFICATIONS] ?: false }
 
-    // --- Setters ---
     suspend fun setDarkTheme(ctx: Context, v: Boolean) {
         ctx.dataStore.edit { it[DARK_THEME] = v }
     }
@@ -58,7 +61,7 @@ object SettingsStore {
         ctx.dataStore.edit { it[NOTIFICATIONS] = v }
     }
 
-    // --- Today's Metadata ---
+    // -------- Today Metadata --------
     suspend fun saveTodayMetadata(ctx: Context, json: String, date: String) {
         ctx.dataStore.edit {
             it[TODAY_META_JSON] = json
@@ -71,57 +74,60 @@ object SettingsStore {
         return prefs[TODAY_META_JSON] to prefs[TODAY_META_DATE]
     }
 
-    // --- Per-User Daily Lock ---
-    suspend fun setLastPlayedDate(ctx: Context, date: String, userId: String) {
+    // -------- PER USER: Last Played Date --------
+    suspend fun setLastPlayedDate(ctx: Context, date: String, uid: String) {
         ctx.dataStore.edit {
-            it[LAST_PLAYED_DATE] = date
-            it[LAST_PLAYED_USER] = userId
+            it[keyLastPlayed(uid)] = date
         }
     }
 
-    suspend fun hasUserPlayedToday(ctx: Context, date: String, userId: String): Boolean {
+    suspend fun hasUserPlayedToday(ctx: Context, date: String, uid: String): Boolean {
         val prefs = ctx.dataStore.data.first()
-        return prefs[LAST_PLAYED_DATE] == date && prefs[LAST_PLAYED_USER] == userId
+        return prefs[keyLastPlayed(uid)] == date
     }
 
-    suspend fun getLastPlayedDate(ctx: Context): String? =
-        ctx.dataStore.data.map { it[LAST_PLAYED_DATE] }.first()
+    suspend fun getLastPlayedDate(ctx: Context, uid: String): String? =
+        ctx.dataStore.data.map { it[keyLastPlayed(uid)] }.first()
 
-    // --- Save Local Board ---
+    // -------- PER USER: Save Local Game State --------
     suspend fun saveLastGameState(
         ctx: Context,
         guesses: List<String>,
-        feedbackRows: List<List<String>>
+        feedbackRows: List<List<String>>,
+        uid: String
     ) {
-        val guessesStr = guesses.joinToString("|") { it.uppercase() }
-        val feedbackStr = feedbackRows.joinToString("|") { row ->
-            row.joinToString("") { it } // "GYAAY"
-        }
+        val gson = Gson()
+        val guessJson = gson.toJson(guesses)
+        val feedbackJson = gson.toJson(feedbackRows)
+
         ctx.dataStore.edit {
-            it[LAST_GUESSES] = guessesStr
-            it[LAST_FEEDBACK_ROWS] = feedbackStr
+            it[keyGameGuesses(uid)] = guessJson
+            it[keyGameFeedback(uid)] = feedbackJson
         }
     }
 
-    suspend fun getLastGameState(ctx: Context): Pair<List<String>, List<List<String>>>? {
+    suspend fun getLastGameState(ctx: Context, uid: String): Pair<List<String>, List<List<String>>>? {
         val prefs = ctx.dataStore.data.first()
-        val g = prefs[LAST_GUESSES]
-        val f = prefs[LAST_FEEDBACK_ROWS]
+        val g = prefs[keyGameGuesses(uid)]
+        val f = prefs[keyGameFeedback(uid)]
 
         if (g.isNullOrBlank() || f.isNullOrBlank()) return null
 
-        val guesses = g.split("|").filter { it.isNotBlank() }
-        val feedbackRows = f.split("|").map { row ->
-            row.trim().map { it.toString() }
-        }
+        val gson = Gson()
 
-        return guesses to feedbackRows
+        val guesses: List<String> =
+            gson.fromJson(g, object : TypeToken<List<String>>() {}.type)
+
+        val feedback: List<List<String>> =
+            gson.fromJson(f, object : TypeToken<List<List<String>>>() {}.type)
+
+        return guesses to feedback
     }
 
-    suspend fun clearLastGameState(ctx: Context) {
+    suspend fun clearLastGameState(ctx: Context, uid: String) {
         ctx.dataStore.edit {
-            it.remove(LAST_GUESSES)
-            it.remove(LAST_FEEDBACK_ROWS)
+            it.remove(keyGameGuesses(uid))
+            it.remove(keyGameFeedback(uid))
         }
     }
 }

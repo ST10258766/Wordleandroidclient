@@ -54,7 +54,8 @@ data class SpeedleFinishRequest(
     val endReason: String,          // "won" | "timeout" | "attempts"
     val clientGuessesUsed: Int,
     val clientTimeTakenSec: Int,
-    val displayName: String? = null // optional: user's display name to show on leaderboard
+    val displayName: String? = null, // optional: user's display name to show on leaderboard
+    val uid: String
 )
 
 data class SpeedleFinishResponse(
