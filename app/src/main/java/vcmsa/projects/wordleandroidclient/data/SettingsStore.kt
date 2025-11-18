@@ -22,6 +22,9 @@ object SettingsStore {
     private val TODAY_META_JSON = stringPreferencesKey("today_meta_json")
     private val TODAY_META_DATE = stringPreferencesKey("today_meta_date")
 
+    // -------- Language Settings --------
+    private val LANGUAGE_CODE = stringPreferencesKey("language_code")
+
     // -------- Dynamic per-user keys --------
     private fun keyLastPlayed(uid: String) =
         stringPreferencesKey("last_played_date_$uid")
@@ -32,7 +35,7 @@ object SettingsStore {
     private fun keyGameFeedback(uid: String) =
         stringPreferencesKey("last_feedback_$uid")
 
-    // -------- Basic Settings --------
+    // -------- Basic Settings FLOWS --------
     fun darkThemeFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[DARK_THEME] ?: false }
 
@@ -45,6 +48,7 @@ object SettingsStore {
     fun notificationsFlow(ctx: Context): Flow<Boolean> =
         ctx.dataStore.data.map { it[NOTIFICATIONS] ?: false }
 
+    // -------- Basic Settings SETTERS --------
     suspend fun setDarkTheme(ctx: Context, v: Boolean) {
         ctx.dataStore.edit { it[DARK_THEME] = v }
     }
@@ -106,7 +110,10 @@ object SettingsStore {
         }
     }
 
-    suspend fun getLastGameState(ctx: Context, uid: String): Pair<List<String>, List<List<String>>>? {
+    suspend fun getLastGameState(
+        ctx: Context,
+        uid: String
+    ): Pair<List<String>, List<List<String>>>? {
         val prefs = ctx.dataStore.data.first()
         val g = prefs[keyGameGuesses(uid)]
         val f = prefs[keyGameFeedback(uid)]
@@ -129,5 +136,35 @@ object SettingsStore {
             it.remove(keyGameGuesses(uid))
             it.remove(keyGameFeedback(uid))
         }
+    }
+
+    // -------- Language Settings API --------
+
+    /**
+     * Observe the currently selected language code.
+     * Returns "en", "af", or null if not chosen yet.
+     */
+    fun observeLanguageCode(ctx: Context): Flow<String?> {
+        return ctx.dataStore.data.map { prefs ->
+            prefs[LANGUAGE_CODE]
+        }
+    }
+
+    /**
+     * Set the language code ("en" or "af").
+     */
+    suspend fun setLanguageCode(ctx: Context, code: String) {
+        ctx.dataStore.edit { prefs ->
+            prefs[LANGUAGE_CODE] = code
+        }
+    }
+
+    /**
+     * Convenience: get the language code once (suspending).
+     * Returns null if not set yet.
+     */
+    suspend fun getLanguageCodeOnce(ctx: Context): String? {
+        val prefs = ctx.dataStore.data.first()
+        return prefs[LANGUAGE_CODE]
     }
 }

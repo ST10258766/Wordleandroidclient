@@ -40,7 +40,9 @@ class OpponentProgressView @JvmOverloads constructor(
         tvSub.text = if (model.lastGuess.isNullOrBlank()) {
             context.getString(R.string.no_guess_yet)
         } else {
-            "AI guessed: ${model.lastGuess}"
+            // Generic label (works for AI and friend)
+            "Opponent guessed: ${model.lastGuess}"
         }
     }
+
 }

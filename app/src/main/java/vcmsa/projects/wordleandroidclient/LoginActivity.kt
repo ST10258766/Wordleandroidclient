@@ -79,13 +79,15 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val pass = etPassword.text.toString()
-            if (email.isEmpty() || pass.isEmpty()) { toast("Enter email and password"); return@setOnClickListener }
+            if (email.isEmpty() || pass.isEmpty()) {
+                toast(getString(R.string.msg_enter_email_password)); return@setOnClickListener
+            }
             lifecycleScope.launch {
                 setBusy(true)
                 try {
                     auth.signInWithEmailAndPassword(email, pass).await()
                     ensureProfile()
-                    toast("Next time you can use biometrics to log in faster")
+                    toast(getString(R.string.msg_auth_quick_login_hint))
                     goToDashboard()
                 } catch (e: Exception) {
                     toast("Login failed: ${e.localizedMessage}")

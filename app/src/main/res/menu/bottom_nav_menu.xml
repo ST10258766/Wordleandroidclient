@@ -2,14 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_home"
         android:title="Home"
-        android:icon="@drawable/ic_home"/>
+        android:icon="@drawable/ic_home"
+        />
 
     <item android:id="@+id/nav_speedle"
         android:title="Speedle"
         android:icon="@drawable/ic_speedlemode"/>
 
     <item android:id="@+id/nav_multiplayer"
-        android:title="Play vs AI"
+        android:title="MultiPlayer"
         android:icon="@drawable/ic_multiplayer"/>
 
     <item android:id="@+id/nav_leaderboard"

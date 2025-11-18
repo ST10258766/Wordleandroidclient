@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tileRoot"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:layout_margin="4dp"
-    android:background="@color/wordrush_empty">
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardBlock"
+    android:layout_width="44dp"
+    android:layout_height="44dp"
+    android:layout_margin="3dp"
+    app:cardCornerRadius="12dp"
+    app:cardUseCompatPadding="false"
+    app:strokeWidth="2dp"
+    app:strokeColor="@android:color/transparent"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/tvLetterBlock"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="20sp"/>
-</FrameLayout>
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+</com.google.android.material.card.MaterialCardView>

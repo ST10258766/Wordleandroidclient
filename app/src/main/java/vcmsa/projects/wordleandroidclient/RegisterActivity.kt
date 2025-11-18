@@ -56,12 +56,23 @@ class RegisterActivity : AppCompatActivity() {
         val pass = etPassword.text.toString()
         val confirm = etConfirm.text.toString()
 
+
         // Field validation
-        if (full.isEmpty()) { toast("Please enter your full name"); return }
-        if (!isValidEmail(email)) { toast("Enter a valid email"); return }
-        if (user.length < 3) { toast("Username must be at least 3 characters"); return }
-        if (!isStrongPassword(pass)) { toast("Password must be at least 6 characters"); return }
-        if (pass != confirm) { toast("Passwords do not match"); return }
+        if (full.isEmpty()) {
+            toast(getString(R.string.msg_signup_fullname_required)); return
+        }
+        if (!isValidEmail(email)) {
+            toast(getString(R.string.msg_signup_invalid_email)); return
+        }
+        if (user.length < 3) {
+            toast(getString(R.string.msg_signup_username_short)); return
+        }
+        if (!isStrongPassword(pass)) {
+            toast(getString(R.string.msg_signup_password_weak)); return
+        }
+        if (pass != confirm) {
+            toast(getString(R.string.msg_signup_password_mismatch)); return
+        }
 
         lifecycleScope.launch {
             setBusy(true)
@@ -71,7 +82,8 @@ class RegisterActivity : AppCompatActivity() {
                     .whereEqualTo("usernameLower", user.lowercase())
                     .limit(1).get().await().isEmpty.not()
                 if (taken) {
-                    toast("Username already taken"); return@launch
+                    toast(getString(R.string.msg_signup_username_taken)); return@launch
+
                 }
 
                 // 2) create auth user

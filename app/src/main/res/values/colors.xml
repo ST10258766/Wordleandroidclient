@@ -20,6 +20,11 @@
     <color name="pink_multiplayer">#E7398D</color>
     <color name="yellow_daily">#FFD700</color>
     <color name="icon_tint">#FFD5D7DA</color>
+    <color name="pink_primary_light">#FFFF5CF4</color>   <!-- bright neon pink -->
+    <color name="pink_primary_dark">#FFFF0A83</color>    <!-- deep magenta -->
+    <color name="pink_glow_edge">#FFFF7CF9</color>       <!-- bright edge / stroke -->
+    <color name="pink_outline">#FFFF60C6</color>         <!-- keep as outline pink -->
+
 
     <color name="bg_start">#F7F9FF</color>
     <color name="bg_end">#FFFFFF</color>

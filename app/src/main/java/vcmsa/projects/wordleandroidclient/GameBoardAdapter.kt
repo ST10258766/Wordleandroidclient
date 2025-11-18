@@ -27,27 +27,62 @@ class GameBoardAdapter(
         fun bindAt(position: Int, letter: String, state: TileState) {
             letterTextView.text = letter
 
-            val (bgColor, fgColor) = when (state) {
-                TileState.CORRECT -> Color.parseColor("#6AAA64") to Color.WHITE  // green
-                TileState.PRESENT -> Color.parseColor("#C9B458") to Color.WHITE  // yellow
-                TileState.ABSENT  -> Color.parseColor("#787C7E") to Color.WHITE  // gray
-                TileState.FILLED  -> Color.WHITE to Color.BLACK                   // typed but not submitted
-                TileState.EMPTY   -> Color.parseColor("#E6E6E6") to Color.DKGRAY // empty
+            val isFinal = state == TileState.CORRECT ||
+                    state == TileState.PRESENT ||
+                    state == TileState.ABSENT
+
+            val bgColor: Int
+            val fgColor: Int
+            val strokeColor: Int
+            val strokeWidth: Int
+
+            when (state) {
+                TileState.CORRECT -> {
+                    bgColor = Color.parseColor("#22C55E")       // neon green
+                    fgColor = Color.WHITE
+                    strokeColor = Color.parseColor("#4ADE80")
+                    strokeWidth = 3
+                }
+                TileState.PRESENT -> {
+                    bgColor = Color.parseColor("#EAB308")       // gold
+                    fgColor = Color.WHITE
+                    strokeColor = Color.parseColor("#FACC15")
+                    strokeWidth = 3
+                }
+                TileState.ABSENT -> {
+                    bgColor = Color.parseColor("#1E293B")       // dark slate
+                    fgColor = Color.parseColor("#9CA3AF")
+                    strokeColor = Color.TRANSPARENT
+                    strokeWidth = 0
+                }
+                TileState.FILLED -> {
+                    // active row typing – dark tile with neon outline
+                    bgColor = Color.parseColor("#020617")
+                    fgColor = Color.WHITE
+                    strokeColor = Color.parseColor("#38BDF8")   // neon blue
+                    strokeWidth = 3
+                }
+                TileState.EMPTY -> {
+                    bgColor = Color.parseColor("#020617")
+                    fgColor = Color.parseColor("#64748B")
+                    strokeColor = Color.parseColor("#1E293B")
+                    strokeWidth = 2
+                }
             }
 
-            // If this tile just transitioned to a final state (G/Y/B), play flip once
-            val isFinal = state == TileState.CORRECT || state == TileState.PRESENT || state == TileState.ABSENT
+            blockCard.setCardBackgroundColor(bgColor)
+            blockCard.strokeColor = strokeColor
+            blockCard.strokeWidth = strokeWidth
+            letterTextView.setTextColor(fgColor)
+
+            // Flip animation only for final states, and only once per position
             if (isFinal && animatedPositions.add(position)) {
-                // Stagger by column index: 0,1,2,3,4 → 0ms,70ms,140ms,210ms,280ms
                 val colIndex = if (wordLength > 0) position % wordLength else 0
                 val delay = 70L * colIndex
                 flipReveal(blockCard, letterTextView, bgColor, fgColor, delay)
-            } else {
-                // No animation (or already animated) — just ensure colors are correct
-                blockCard.setCardBackgroundColor(bgColor)
-                letterTextView.setTextColor(fgColor)
             }
         }
+
 
         private fun flipReveal(
             card: CardView,

@@ -1,35 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/bg_welcome_gradient" android:padding="24dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_welcome_gradient"
+    android:padding="24dp">
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:orientation="vertical" android:gravity="center">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
+        <!-- Small top spacer (keeps logo slightly down) -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.6" />
+
+        <!-- Logo -->
         <ImageView
-            android:layout_width="200dp" android:layout_height="200dp"
-            android:src="@drawable/wordrush_logo" android:contentDescription="@string/app_name"/>
+            android:id="@+id/imgLogo"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:src="@drawable/wordrush_logo"
+            android:contentDescription="@string/app_name" />
 
+        <!-- Title -->
         <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="WordRush" android:textStyle="bold" android:textSize="26sp"
-            android:textColor="@android:color/white" android:layout_marginTop="8dp"/>
+            android:id="@+id/tvEntryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="WordRush"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@android:color/white" />
 
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tvEntrySubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:gravity="center"
+            android:alpha="0.85"
+            android:text="@string/entry_choice_subtitle"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <!-- Login -->
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="220dp" android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/btn_pink_glow"
-            android:text="LOGIN" android:textAllCaps="true"
-            android:textStyle="bold" android:textColor="@android:color/white"/>
+            android:layout_width="220dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/btn_primary_pink_glow"
+            android:text="@string/btn_login"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
 
+        <!-- Signup -->
         <Button
             android:id="@+id/btnSignup"
-            android:layout_width="220dp" android:layout_height="56dp"
+            android:layout_width="220dp"
+            android:layout_height="56dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/btn_outline_pink"
-            android:text="SIGNUP" android:textAllCaps="true"
-            android:textStyle="bold" android:textColor="#FF60C6"/>
+            android:text="@string/btn_signup"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/pink_outline" />
+
+
+        <!-- Bottom spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1.3" />
+
     </LinearLayout>
 </FrameLayout>

@@ -1,73 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/bg_welcome_gradient">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_welcome_gradient"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="24dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="80dp"
+        android:paddingBottom="32dp">
 
+        <!-- Logo -->
         <ImageView
-            android:layout_width="64dp" android:layout_height="64dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/wordrush_logo" android:contentDescription="@string/app_name"/>
+            android:id="@+id/imgLogoSmall"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/wordrush_logo"
+            android:contentDescription="@string/app_name" />
 
+        <!-- Title -->
         <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Create Account" android:textStyle="bold"
-            android:textSize="22sp" android:textColor="@android:color/white"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp" android:layout_marginBottom="16dp"/>
+            android:id="@+id/tvRegisterTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_title"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@android:color/white" />
 
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tvRegisterSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/register_subtitle"
+            android:textColor="#CCFFFFFF"
+            android:textSize="12sp" />
+
+        <!-- Full name -->
         <EditText
             android:id="@+id/etFullName"
             style="@style/WrInput"
-            android:hint="Full Name"/>
+            android:layout_marginTop="20dp"
+            android:hint="@string/hint_full_name" />
 
+        <!-- Email -->
         <EditText
             android:id="@+id/etEmail"
             style="@style/WrInput"
             android:inputType="textEmailAddress"
-            android:hint="Email"/>
+            android:hint="@string/hint_email" />
 
+        <!-- Username -->
         <EditText
             android:id="@+id/etUsername"
             style="@style/WrInput"
-            android:hint="Username"/>
+            android:hint="@string/hint_username" />
 
+        <!-- Password -->
         <EditText
             android:id="@+id/etPassword"
             style="@style/WrInput"
             android:inputType="textPassword"
-            android:hint="Password"/>
+            android:hint="@string/hint_password" />
 
+        <!-- Confirm -->
         <EditText
             android:id="@+id/etConfirm"
             style="@style/WrInput"
             android:inputType="textPassword"
-            android:hint="Confirm Password"/>
+            android:hint="@string/hint_confirm_password" />
 
+        <!-- Progress -->
         <ProgressBar
             android:id="@+id/progress"
             style="?android:attr/progressBarStyleLarge"
-            android:layout_width="48dp" android:layout_height="48dp"
-            android:layout_gravity="center_horizontal" android:visibility="gone"
-            android:layout_marginTop="8dp"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
+        <!-- SIGN UP -->
         <Button
             android:id="@+id/btnSignup"
-            android:layout_width="match_parent" android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/btn_pink_glow"
-            android:text="SIGNUP" android:textAllCaps="true"
-            android:textStyle="bold" android:textColor="@android:color/white"/>
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_primary_pink_glow"
+            android:text="@string/btn_signup"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
 
+        <!-- Already have account -->
         <TextView
             android:id="@+id/tvLoginLink"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Already have an account? Log in"
-            android:textColor="#BFE3FF" android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/auth_already_have_account"
+            android:textColor="#BFE3FF"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 </ScrollView>

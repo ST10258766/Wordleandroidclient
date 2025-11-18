@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#33FFFFFF">
-    <item>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Pressed state -->
+    <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="28dp"/>
-            <solid android:color="#3B82F6"/>
-            <padding android:left="16dp" android:top="8dp" android:right="16dp" android:bottom="8dp"/>
-            <size android:height="56dp"/>
-            <shadowColor android:color="#803B82F6"/>
+            <corners android:radius="999dp" />
+            <gradient
+                android:startColor="#FF3F7BFF"
+                android:endColor="#FF2FD1FF"
+                android:angle="45" />
+            <padding
+                android:left="16dp"
+                android:top="12dp"
+                android:right="16dp"
+                android:bottom="12dp" />
+            <!-- Slightly darker when pressed -->
+            <stroke
+                android:width="2dp"
+                android:color="#803F7BFF" />
         </shape>
     </item>
-</ripple>
+
+    <!-- Default state -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="999dp" />
+            <gradient
+                android:startColor="#FF4D9EFF"
+                android:endColor="#FF5F7BFF"
+                android:angle="45" />
+            <padding
+                android:left="16dp"
+                android:top="12dp"
+                android:right="16dp"
+                android:bottom="12dp" />
+            <!-- Neon edge “glow” -->
+            <stroke
+                android:width="3dp"
+                android:color="#8035C9FF" />
+        </shape>
+    </item>
+
+</selector>

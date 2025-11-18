@@ -1,21 +1,118 @@
 <resources>
-    <string name="app_name">Wordleandroidclient</string>
-    <string name="welcome_title">Welcome To WordRush</string>
-    <string name="get_started">Get Started</string>
+
+    <!-- 🌈 App -->
+    <string name="app_name">WordRush</string>
+
+    <!-- 👋 Welcome / Entry -->
+    <string name="welcome_title">Welcome to WordRush</string>
+    <string name="welcome_subtitle">
+        Daily word puzzles, Speedle mode and neon multiplayer goodness.
+    </string>
+    <string name="get_started">Get started</string>
+    <string name="btn_begin">Begin</string>
+    <string name="login_subtitle">Welcome back! Log in to continue your streak.</string>
+    <string name="register_subtitle">Create your WordRush account to start playing.</string>
+
+    <!-- 🔐 Auth – common buttons/labels -->
+    <string name="btn_login">Login</string>
+    <string name="btn_signup">Sign up</string>
+
+    <string name="login_title">Login</string>
+    <string name="register_title">Create account</string>
+
+    <string name="hint_full_name">Full name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm password</string>
+
+    <string name="auth_already_have_account">
+        Already have an account? Log in
+    </string>
+    <string name="auth_no_account_yet">
+        Don’t have an account yet? Sign up
+    </string>
+
+    <string name="btn_google_continue">Continue with Google</string>
+    <string name="btn_biometric_login">Use biometric login</string>
+
+    <!-- 🔐 Auth – messages (we’ll translate these later) -->
+    <string name="msg_enter_email_password">Enter email and password</string>
+    <string name="msg_signup_fullname_required">Please enter your full name</string>
+    <string name="msg_signup_invalid_email">Enter a valid email</string>
+    <string name="msg_signup_username_short">
+        Username must be at least 3 characters
+    </string>
+    <string name="msg_signup_password_weak">
+        Password must be at least 6 characters
+    </string>
+    <string name="msg_signup_password_mismatch">Passwords do not match</string>
+    <string name="msg_signup_username_taken">Username already taken</string>
+    <string name="msg_auth_quick_login_hint">
+        Next time you can use biometrics to log in faster
+    </string>
+
+    <!-- ⌨️ Game / keyboard -->
     <string name="daily_wordrush">Daily WordRush</string>
     <string name="back">⌫</string>
     <string name="help">Help</string>
     <string name="enter">ENT</string>
     <string name="backspace">BACK</string>
-    <string name="powerup_locked">Power-up locked</string>
     <string name="backspace_short">BACK</string>
+    <string name="powerup_locked">Power-up locked</string>
+
+    <!-- 🤝 Opponent / multiplayer panel -->
     <string name="opponent_avatar">Opponent avatar</string>
     <string name="no_guess_yet">No guess yet</string>
     <string name="definition_hint">Hint: definition</string>
     <string name="synonym_hint">Hint: synonym</string>
+    <string name="opponent_guessed">Opponent guessed: %1$s</string>
 
-    <string name="default_web_client_id">
-    598667406883-9m60b3etnif36nv7uu2gfmfomldo0s43.apps.googleusercontent.com
+    <!-- 👯‍♀️ Friends multiplayer -->
+    <string name="play_friends_title">Play with friends</string>
+    <string name="play_friends_room_hint">Enter room code</string>
+    <string name="play_friends_join">Join room</string>
+    <string name="play_friends_generate">Generate code</string>
+
+    <!-- 🕒 Waiting room -->
+    <string name="room_title">Room</string>
+    <string name="room_status_waiting">Waiting for your friend…</string>
+    <string name="room_status_ready">Friend joined! Starting…</string>
+    <string name="room_starting">Starting match…</string>
+
+
+    <string name="entry_choice_subtitle">
+    Log in or create an account to start playing.
 </string>
-</resources>
 
+    <!-- fix typo -->
+    <string name="error_create_room_failed">
+    Could not create a room. Please try again.
+</string>
+
+
+
+    <!-- Field hints -->
+
+
+
+    <!-- Buttons / helpers -->
+
+
+
+
+    <!-- ⚠️ Multiplayer toasts / errors -->
+    <string name="toast_room_created">
+        Room %1$s created. Share this code with your friend.
+    </string>
+    <string name="error_room_code_required">Please enter a room code.</string>
+    <string name="error_room_code_invalid">Room code should be 6 characters.</string>
+
+    <string name="error_join_room_failed">Could not join room.</string>
+
+    <!-- 🔑 Google client id (keep as-is for Firebase config) -->
+    <string name="default_web_client_id">
+        598667406883-9m60b3etnif36nv7uu2gfmfomldo0s43.apps.googleusercontent.com
+    </string>
+
+</resources>

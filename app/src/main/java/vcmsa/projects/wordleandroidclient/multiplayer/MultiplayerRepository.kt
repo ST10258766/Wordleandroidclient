@@ -1,95 +1,173 @@
 package vcmsa.projects.wordleandroidclient.multiplayer
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import java.util.*
 
-data class RoomDoc(
-    val code: String = "",
-    val createdAt: Long = 0L,
-    val length: Int = 5,
-    val targetWordHash: String? = null, // TODO: hash if you don’t want plaintext
-    val targetWord: String? = null,     // v1: keep it simple (dev), remove later
-    val hostId: String = "",
-    val guestId: String? = null,
-    val hostOnline: Boolean = true,
-    val guestOnline: Boolean = false,
-    val start: Boolean = false,
-    val cancelled: Boolean = false
-)
+/**
+ * Handles Firestore multiplayer rooms & guess events.
+ *
+ * Collection: rooms/{roomCode}
+ *   - hostUid: String
+ *   - hostName: String
+ *   - status: "waiting" | "ready" | "cancelled"
+ *   - createdAt: Long (ms)
+ *
+ * Subcollection: rooms/{roomCode}/players/{uid}
+ *   - uid: String
+ *   - displayName: String
+ *   - joinedAt: Long
+ *
+ * Subcollection: rooms/{roomCode}/events/{autoId}
+ *   - userId: String
+ *   - guess: String
+ *   - feedback: List<String>
+ *   - row: Int
+ *   - ts: Long
+ */
+object MultiplayerRepository {
 
-data class GuessEvent(
-    val userId: String = "",
-    val guess: String = "",
-    val feedback: List<String> = emptyList(),
-    val row: Int = 0,
-    val ts: Long = 0L
-)
+    private val db get() = FirebaseFirestore.getInstance()
+    private val auth get() = FirebaseAuth.getInstance()
 
-class MultiplayerRepository(
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-) {
-    private fun rooms() = db.collection("rooms")
-    private fun room(code: String) = rooms().document(code)
-    private fun events(code: String) = room(code).collection("events")
+    data class RoomInfo(
+        val code: String,
+        val hostUid: String,
+        val status: String,
+        val createdAt: Long
+    )
 
-    suspend fun createRoom(code: String, hostId: String, length: Int, targetWord: String) {
-        val doc = RoomDoc(
-            code = code,
-            createdAt = System.currentTimeMillis(),
-            length = length,
-            targetWord = targetWord,
-            hostId = hostId,
-            hostOnline = true
+    // ---------- helpers ----------
+    private fun roomDoc(code: String) =
+        db.collection("rooms").document(code.uppercase())
+
+    private fun eventsCollection(code: String) =
+        roomDoc(code).collection("events")
+
+    private fun currentUserOrThrow() =
+        auth.currentUser ?: throw IllegalStateException("User not logged in")
+
+    // ---------- CREATE ROOM (HOST) ----------
+
+    suspend fun createRoom(roomCode: String): RoomInfo {
+        val user = currentUserOrThrow()
+        val code = roomCode.uppercase()
+        val now = System.currentTimeMillis()
+
+        val roomRef = roomDoc(code)
+
+        val roomData = mapOf(
+            "hostUid" to user.uid,
+            "hostName" to (user.displayName ?: ""),
+            "status" to "waiting",
+            "createdAt" to now
         )
-        room(code).set(doc).await()
+        roomRef.set(roomData).await()
+
+        val playerData = mapOf(
+            "uid" to user.uid,
+            "displayName" to (user.displayName ?: ""),
+            "joinedAt" to now
+        )
+        roomRef.collection("players").document(user.uid).set(playerData).await()
+
+        return RoomInfo(
+            code = code,
+            hostUid = user.uid,
+            status = "waiting",
+            createdAt = now
+        )
     }
 
-    suspend fun joinRoom(code: String, guestId: String): RoomDoc? {
-        val snap = room(code).get().await()
-        if (!snap.exists()) return null
-        val current = snap.toObject(RoomDoc::class.java) ?: return null
-        if (current.guestId != null) return null // already full
-        room(code).update(mapOf("guestId" to guestId, "guestOnline" to true)).await()
-        return current.copy(guestId = guestId, guestOnline = true)
-    }
+    // ---------- JOIN ROOM (FRIEND) ----------
 
-    suspend fun markOnline(code: String, userId: String, online: Boolean) {
-        val field = if (isHost(code, userId)) "hostOnline" else "guestOnline"
-        room(code).update(field, online).await()
-    }
+    suspend fun joinRoom(roomCode: String): RoomInfo {
+        val user = currentUserOrThrow()
+        val code = roomCode.uppercase()
+        val roomRef = roomDoc(code)
 
-    private suspend fun isHost(code: String, userId: String): Boolean {
-        val r = room(code).get().await().toObject(RoomDoc::class.java) ?: return false
-        return r.hostId == userId
-    }
-
-    fun observeRoom(code: String): Flow<RoomDoc?> = callbackFlow {
-        val reg: ListenerRegistration = room(code).addSnapshotListener { snap, _ ->
-            trySend(snap?.toObject(RoomDoc::class.java))
+        val snap = roomRef.get().await()
+        if (!snap.exists()) {
+            throw IllegalStateException("Room does not exist")
         }
-        awaitClose { reg.remove() }
+
+        val status = snap.getString("status") ?: "waiting"
+        if (status != "waiting") {
+            throw IllegalStateException("Room is not open anymore")
+        }
+
+        val now = System.currentTimeMillis()
+        val playerData = mapOf(
+            "uid" to user.uid,
+            "displayName" to (user.displayName ?: ""),
+            "joinedAt" to now
+        )
+        roomRef.collection("players").document(user.uid).set(playerData).await()
+
+        // Mark room as "ready" when second player joins
+        roomRef.update("status", "ready").await()
+
+        val hostUid = snap.getString("hostUid") ?: ""
+        val createdAt = snap.getLong("createdAt") ?: now
+
+        return RoomInfo(
+            code = code,
+            hostUid = hostUid,
+            status = "ready",
+            createdAt = createdAt
+        )
     }
 
-    suspend fun startMatch(code: String) {
-        room(code).update("start", true).await()
+    // ---------- LISTEN FOR PLAYERS ----------
+
+    fun listenForPlayerCount(
+        roomCode: String,
+        onChange: (count: Int) -> Unit
+    ): ListenerRegistration {
+        val code = roomCode.uppercase()
+        val roomRef = roomDoc(code)
+
+        return roomRef.collection("players")
+            .addSnapshotListener { snap, e ->
+                if (e != null || snap == null) return@addSnapshotListener
+                onChange(snap.size())
+            }
     }
+
+    // ---------- CLEAN UP ----------
+
+    suspend fun cancelRoom(roomCode: String) {
+        val code = roomCode.uppercase()
+        roomDoc(code).delete().await()
+    }
+
+    // ---------- GUESS EVENTS (FRIENDS RACE) ----------
 
     fun observeEvents(code: String): Flow<GuessEvent> = callbackFlow {
-        val reg = events(code).orderBy("ts").addSnapshotListener { qs, _ ->
-            qs?.documentChanges?.forEach { dc ->
-                val ev = dc.document.toObject(GuessEvent::class.java)
-                trySend(ev)
+        val reg = eventsCollection(code)
+            .orderBy("ts")
+            .addSnapshotListener { qs, _ ->
+                qs?.documentChanges?.forEach { dc ->
+                    val ev = dc.document.toObject<GuessEvent>()
+                    trySend(ev)
+                }
             }
-        }
+
         awaitClose { reg.remove() }
     }
 
-    suspend fun postGuess(code: String, userId: String, guess: String, feedback: List<String>, row: Int) {
+    suspend fun postGuess(
+        code: String,
+        userId: String,
+        guess: String,
+        feedback: List<String>,
+        row: Int
+    ) {
         val ev = GuessEvent(
             userId = userId,
             guess = guess,
@@ -97,11 +175,6 @@ class MultiplayerRepository(
             row = row,
             ts = System.currentTimeMillis()
         )
-        events(code).add(ev).await()
-    }
-
-    suspend fun leaveRoom(code: String, userId: String) {
-        markOnline(code, userId, false)
-        // keep room for 45s to allow reconnect; a Cloud Function or TTL rule can clean up later.
+        eventsCollection(code).add(ev).await()
     }
 }

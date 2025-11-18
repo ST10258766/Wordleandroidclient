@@ -1,27 +1,34 @@
 package vcmsa.projects.wordleandroidclient
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import vcmsa.projects.wordleandroidclient.data.SettingsStore
+import vcmsa.projects.wordleandroidclient.leaderboard.LeaderboardActivity
+import vcmsa.projects.wordleandroidclient.multiplayer.MultiplayerModeActivity
+import vcmsa.projects.wordleandroidclient.multiplayer.PlayWithAIActivity
+import vcmsa.projects.wordleandroidclient.multiplayer.PlayWithFriendsActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import vcmsa.projects.wordleandroidclient.data.SettingsStore
-import vcmsa.projects.wordleandroidclient.multiplayer.PlayWithAIActivity
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -35,6 +42,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var cardDaily: View
 
     private var countdown: CountDownTimer? = null
+    private var dailyPulse: AnimatorSet? = null // kept for safety, but we now use XML pulse anim
 
     override fun onStart() {
         super.onStart()
@@ -53,119 +61,42 @@ class DashboardActivity : AppCompatActivity() {
         refreshDailyCardState()
     }
 
-    private fun refreshDailyCardState() {
-        Log.e("DASHBOARD", "refreshDailyCardState started")
-
-        lifecycleScope.launch {
-            var played = false
-            val today = getTodayIso()
-
-            try {
-                val user = auth.currentUser
-
-                if (user == null) {
-                    // Should NEVER happen since login is required
-                    Log.e("DASHBOARD", "ERROR: refreshDailyCardState called with NO logged-in user!")
-                    applyDailyCardState(false)
-                    return@launch
-                }
-
-                val uid = user.uid
-                Log.e("DASHBOARD", "Checking for user: $uid")
-
-                // 1. FAST LOCAL CHECK (per-user)
-                val localPlayed = SettingsStore.hasUserPlayedToday(
-                    this@DashboardActivity,
-                    today,
-                    uid
-                )
-
-                Log.e("DASHBOARD", "Local check: played=$localPlayed")
-
-                if (localPlayed) {
-                    played = true
-                    Log.e("DASHBOARD", "Using LOCAL state (played=true)")
-                } else {
-                    // 2. CHECK FIRESTORE (slow)
-                    Log.e("DASHBOARD", "Checking Firestore for doc...")
-
-                    val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                    val docId = "${today}_en-ZA_${uid}"
-
-                    try {
-                        val doc = db.collection("results").document(docId).get().await()
-                        val firestorePlayed = doc.exists()
-
-                        Log.e("DASHBOARD", "Firestore says: played=$firestorePlayed")
-
-                        if (firestorePlayed) {
-                            // Sync local so next time it's instant
-                            SettingsStore.setLastPlayedDate(
-                                this@DashboardActivity,
-                                today,
-                                uid
-                            )
-                            played = true
-                        } else {
-                            played = false
-                        }
-
-                    } catch (e: Exception) {
-                        Log.e("DASHBOARD", "Firestore error: ${e.message}")
-                        // fall back to local
-                        played = localPlayed
-                    }
-                }
-
-            } catch (e: Exception) {
-                Log.e("DASHBOARD", "Error: ${e.message}", e)
-                played = false
-            }
-
-            Log.e("DASHBOARD", "***** FINAL: played=$played *****")
-            applyDailyCardState(played)
-        }
-    }
-
-    private fun applyDailyCardState(played: Boolean) {
-        Log.e("DASHBOARD", "applyDailyCardState: played=$played")
-        if (played) {
-            Log.e("DASHBOARD", "Setting card to DISABLED state (alpha=0.6)")
-            cardDaily.alpha = 0.6f
-            cardDaily.setOnClickListener {
-                Log.e("DASHBOARD", "Disabled card clicked - showing dialog")
-                androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle("Daily played")
-                    .setMessage("You've already played today. Come back tomorrow!")
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        } else {
-            Log.e("DASHBOARD", "Setting card to ENABLED state (alpha=1.0)")
-            cardDaily.alpha = 1f
-            cardDaily.setOnClickListener {
-                Log.e("DASHBOARD", "Enabled card clicked - launching game")
-                startActivity(Intent(this, MainActivity::class.java))
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         supportActionBar?.hide()
 
-        tvGreeting = findViewById(R.id.tvGreeting)
-        chipStreak = findViewById(R.id.chipStreak)
+        tvGreeting       = findViewById(R.id.tvGreeting)
+        chipStreak       = findViewById(R.id.chipStreak)
         tvDailyCountdown = findViewById(R.id.tvDailyCountdown)
-        bottomNav = findViewById(R.id.bottomNav)
-        cardDaily = findViewById(R.id.cardDaily)
-        btnAI = findViewById(R.id.btnAI)
+        bottomNav        = findViewById(R.id.bottomNav)
+        cardDaily        = findViewById(R.id.cardDaily)
+        btnAI            = findViewById(R.id.btnAI)
 
+        val quickActionsRow  = findViewById<View>(R.id.quickActionsRow)
+        val cardSpeedle      = findViewById<View>(R.id.cardSpeedle)
+        val cardPlayAi       = findViewById<View>(R.id.cardPlayAi)
+        val cardLeaderboard  = findViewById<View>(R.id.cardLeaderboard)
+        val cardBadges       = findViewById<View>(R.id.cardBadges)
+        val btnHowToTop      = findViewById<View>(R.id.btnHowToTop)
+        val btnSpeedleStart  = findViewById<Button>(R.id.btnSpeedleStart)
+
+        // Show bottom-nav icons in their own neon colours (no tint)
+        bottomNav.itemIconTintList = null
+
+        // Greeting text + time-of-day flavour
         val user = auth.currentUser
-        val fallback = user?.displayName ?: user?.email?.substringBefore("@") ?: "Player"
-        tvGreeting.text = "Welcome back, $fallback"
+        val baseName = user?.displayName ?: user?.email?.substringBefore("@") ?: "Player"
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val prefix = when (hour) {
+            in 5..11  -> "Good morning"
+            in 12..16 -> "Good afternoon"
+            in 17..22 -> "Good evening"
+            else      -> "Hey night owl"
+        }
+        tvGreeting.text = "$prefix, $baseName"
 
+        // Streak chip – uses StatsManager
         val stats = StatsManager.getStats(this)
         chipStreak.text = if (stats.currentStreak > 0) {
             "🔥 ${stats.currentStreak}-day streak"
@@ -173,29 +104,58 @@ class DashboardActivity : AppCompatActivity() {
             "Start a streak today"
         }
 
-        findViewById<View>(R.id.qaSpeedle).setOnClickListener {
-            bottomNav.selectedItemId = R.id.nav_speedle
-        }
-        findViewById<View>(R.id.qaMultiplayer).setOnClickListener {
-            bottomNav.selectedItemId = R.id.nav_multiplayer
-        }
-        findViewById<View>(R.id.qaLeaderboard).setOnClickListener {
-            startActivity(Intent(this, vcmsa.projects.wordleandroidclient.leaderboard.LeaderboardActivity::class.java))
-        }
-        findViewById<View>(R.id.qaStats).setOnClickListener {
-            showComingSoon("Stats")
-        }
-        findViewById<View>(R.id.qaHowTo).setOnClickListener { showHowToDialog() }
+        // --- QUICK ACTIONS ---
 
+        // Daily tile – same behaviour as main Daily card
+        findViewById<View>(R.id.qaDaily).setOnClickListener {
+            cardDaily.performClick()
+        }
+
+        // Speedle quick action – open duration chooser
+        findViewById<View>(R.id.qaSpeedle).setOnClickListener {
+            showSpeedleDurationChooser()
+        }
+
+        // Play vs AI quick action
+        findViewById<View>(R.id.qaPlayAi).setOnClickListener {
+            startActivity(Intent(this, PlayWithAIActivity::class.java))
+        }
+
+        // Friends quick action
+        findViewById<View>(R.id.qaFriends).setOnClickListener {
+            startActivity(Intent(this, PlayWithFriendsActivity::class.java))
+        }
+
+        // Leaderboard quick action
+        findViewById<View>(R.id.qaLeaderboard).setOnClickListener {
+            startActivity(Intent(this, LeaderboardActivity::class.java))
+        }
+
+        // Badges quick action
+        findViewById<View>(R.id.qaBadges).setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
+        // Stats quick action – opens StatsActivity
+        findViewById<View>(R.id.qaStats).setOnClickListener {
+            startActivity(Intent(this, StatsActivity::class.java))
+        }
+
+        // Top-right help icon
+        btnHowToTop.setOnClickListener { showHowToDialog() }
+
+        // AI big card button
         btnAI.setOnClickListener {
             startActivity(Intent(this, PlayWithAIActivity::class.java))
         }
 
+        // Speedle radio group default
         val rg = findViewById<RadioGroup>(R.id.rgSpeedle).apply {
             check(R.id.rb90)
         }
 
-        findViewById<View>(R.id.cardSpeedle).setOnClickListener {
+        // Speedle "Start" button – user chooses duration then taps this
+        btnSpeedleStart.setOnClickListener {
             val seconds = when (rg.checkedRadioButtonId) {
                 R.id.rb60  -> 60
                 R.id.rb120 -> 120
@@ -209,25 +169,39 @@ class DashboardActivity : AppCompatActivity() {
             )
         }
 
+        // Mini cards
+        cardLeaderboard.setOnClickListener {
+            startActivity(Intent(this, LeaderboardActivity::class.java))
+        }
+        cardBadges.setOnClickListener {
+            startActivity(Intent(this, BadgesActivity::class.java))
+        }
+
+        // Bottom nav behaviour
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> true
+
                 R.id.nav_speedle -> {
                     showSpeedleDurationChooser()
                     true
                 }
+
                 R.id.nav_multiplayer -> {
-                    startActivity(Intent(this, PlayWithAIActivity::class.java))
+                    startActivity(Intent(this, MultiplayerModeActivity::class.java))
                     true
                 }
+
                 R.id.nav_leaderboard -> {
-                    startActivity(Intent(this, vcmsa.projects.wordleandroidclient.leaderboard.LeaderboardActivity::class.java))
+                    startActivity(Intent(this, LeaderboardActivity::class.java))
                     true
                 }
+
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
                     true
                 }
+
                 else -> false
             }
         }
@@ -235,15 +209,55 @@ class DashboardActivity : AppCompatActivity() {
 
         startResetCountdown()
         refreshDailyCardState()
+
+        // 🔥 Simple fade-up animations when screen opens
+        tvGreeting.fadeInUp(0)
+        chipStreak.fadeInUp(40)
+        quickActionsRow.fadeInUp(80)
+        cardDaily.fadeInUp(160)
+        cardSpeedle.fadeInUp(240)
+        cardPlayAi.fadeInUp(320)
+        cardLeaderboard.fadeInUp(400)
+        cardBadges.fadeInUp(480)
     }
 
-    private fun showComingSoon(feature: String) {
-        androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("$feature")
-            .setMessage("Coming soon")
-            .setPositiveButton("OK", null)
-            .show()
+    // --- Small helpers for animations ---
+
+    private fun View.fadeInUp(delay: Long = 0L, duration: Long = 400L) {
+        alpha = 0f
+        translationY = 40f
+        animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(delay)
+            .setDuration(duration)
+            .start()
     }
+
+    private fun View.startPulse() {
+        val scaleX = ObjectAnimator.ofFloat(this, View.SCALE_X, 1f, 1.04f)
+        val scaleY = ObjectAnimator.ofFloat(this, View.SCALE_Y, 1f, 1.04f)
+        scaleX.repeatMode = ValueAnimator.REVERSE
+        scaleY.repeatMode = ValueAnimator.REVERSE
+        scaleX.repeatCount = ValueAnimator.INFINITE
+        scaleY.repeatCount = ValueAnimator.INFINITE
+        scaleX.duration = 900
+        scaleY.duration = 900
+
+        dailyPulse = AnimatorSet().apply {
+            playTogether(scaleX, scaleY)
+            start()
+        }
+    }
+
+    private fun stopDailyPulse() {
+        dailyPulse?.cancel()
+        dailyPulse = null
+        cardDaily.scaleX = 1f
+        cardDaily.scaleY = 1f
+    }
+
+    // --- Dialog helpers ---
 
     private fun showSpeedleDurationChooser() {
         val durations = arrayOf("60 seconds", "90 seconds", "120 seconds")
@@ -263,11 +277,13 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun showHowToDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_how_to_play, null)
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setView(view)
             .setPositiveButton("Got it") { d, _ -> d.dismiss() }
             .show()
     }
+
+    // --- Daily reset countdown ---
 
     private fun startResetCountdown() {
         val cal = Calendar.getInstance().apply {
@@ -295,8 +311,94 @@ class DashboardActivity : AppCompatActivity() {
         }.start()
     }
 
+    // --- Daily card played/not played logic ---
+
+    private fun refreshDailyCardState() {
+        Log.e("DASHBOARD", "refreshDailyCardState started")
+
+        lifecycleScope.launch {
+            var played = false
+            val today = getTodayIso()
+
+            try {
+                val user = auth.currentUser
+                if (user == null) {
+                    Log.e("DASHBOARD", "ERROR: no logged-in user")
+                    applyDailyCardState(false)
+                    return@launch
+                }
+
+                val uid = user.uid
+
+                val localPlayed = SettingsStore.hasUserPlayedToday(
+                    this@DashboardActivity,
+                    today,
+                    uid
+                )
+
+                played = if (localPlayed) {
+                    true
+                } else {
+                    val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    val docId = "${today}_en-ZA_${uid}"
+
+                    try {
+                        val doc = db.collection("results").document(docId).get().await()
+                        val firestorePlayed = doc.exists()
+                        if (firestorePlayed) {
+                            SettingsStore.setLastPlayedDate(
+                                this@DashboardActivity,
+                                today,
+                                uid
+                            )
+                            true
+                        } else {
+                            false
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DASHBOARD", "Firestore error: ${e.message}")
+                        localPlayed
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("DASHBOARD", "Error: ${e.message}", e)
+                played = false
+            }
+
+            applyDailyCardState(played)
+        }
+    }
+
+    private fun applyDailyCardState(played: Boolean) {
+        Log.e("DASHBOARD", "applyDailyCardState: played=$played")
+
+        if (played) {
+            cardDaily.clearAnimation()
+            cardDaily.alpha = 0.6f
+            cardDaily.setOnClickListener {
+                AlertDialog.Builder(this)
+                    .setTitle("Daily played")
+                    .setMessage("You've already played today. Come back tomorrow!")
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        } else {
+            cardDaily.alpha = 1f
+            cardDaily.clearAnimation()
+            // soft pulse XML animation
+            cardDaily.startAnimation(
+                AnimationUtils.loadAnimation(this, R.anim.pulse_soft)
+            )
+            cardDaily.setOnClickListener {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
+    }
+
     override fun onDestroy() {
         countdown?.cancel()
+        stopDailyPulse()
         super.onDestroy()
     }
 

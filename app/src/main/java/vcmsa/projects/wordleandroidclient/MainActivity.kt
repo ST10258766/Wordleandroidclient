@@ -437,10 +437,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     /** Friends race via Firestore events. */
     private fun startFriendsMultiplayer(code: String, target: String) {
-        val repo = MultiplayerRepository()
+        val repo = MultiplayerRepository
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: UUID.randomUUID().toString()
 
         val len = target.length.coerceIn(3, 7)
@@ -451,6 +450,7 @@ class MainActivity : AppCompatActivity() {
 
         opponentView?.bind(OpponentProgress(status = "Waiting…", row = 0))
 
+        // Listen for opponent guesses
         friendEventsJob?.cancel()
         friendEventsJob = lifecycleScope.launch {
             repo.observeEvents(code).collect { ev ->
@@ -463,50 +463,134 @@ class MainActivity : AppCompatActivity() {
                             status = "Playing"
                         )
                     )
-                    if (ev.feedback.all { it == "G" } && viewModel.gameState.value == GameState.PLAYING) {
-                        androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
-                            .setTitle("Opponent wins 🧑‍🤝‍🧑")
-                            .setMessage("The word was $target.")
-                            .setPositiveButton("OK") { d, _ -> d.dismiss(); finish() }
-                            .show()
+                    val repo = MultiplayerRepository
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid ?: UUID.randomUUID().toString()
+
+                    val len = target.length.coerceIn(3, 7)
+                    lifecycleScope.launch {
+                        viewModel.setModeDaily()
+                        viewModel.resetBoard(len)
                     }
+
+                    opponentView?.bind(OpponentProgress(status = "Waiting…", row = 0))
+
+                    // Listen for opponent guesses
+                    friendEventsJob?.cancel()
+                    friendEventsJob = lifecycleScope.launch {
+                        repo.observeEvents(code).collect { ev ->
+                            if (ev.userId != uid) {
+                                opponentView?.bind(
+                                    OpponentProgress(
+                                        lastGuess = ev.guess,
+                                        lastFeedback = ev.feedback,
+                                        row = ev.row,
+                                        status = "Playing"
+                                    )
+                                )
+                                val repo = MultiplayerRepository
+                                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: UUID.randomUUID().toString()
+
+                                val len = target.length.coerceIn(3, 7)
+                                lifecycleScope.launch {
+                                    viewModel.setModeDaily()
+                                    viewModel.resetBoard(len)
+                                }
+
+                                opponentView?.bind(OpponentProgress(status = "Waiting…", row = 0))
+
+                                // Listen for opponent guesses
+                                friendEventsJob?.cancel()
+                                friendEventsJob = lifecycleScope.launch {
+                                    repo.observeEvents(code).collect { ev ->
+                                        if (ev.userId != uid) {
+                                            opponentView?.bind(
+                                                OpponentProgress(
+                                                    lastGuess = ev.guess,
+                                                    lastFeedback = ev.feedback,
+                                                    row = ev.row,
+                                                    status = "Playing"
+                                                )
+                                            )
+                                            if (ev.feedback.all { it == "G" } &&
+                                                viewModel.gameState.value == GameState.PLAYING
+                                            ) {
+                                                androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
+                                                    .setTitle("Opponent wins 🧑‍🤝‍🧑")
+                                                    .setMessage("The word was $target.")
+                                                    .setPositiveButton("OK") { d, _ ->
+                                                        d.dismiss(); finish()
+                                                    }
+                                                    .show()
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
                 }
             }
         }
 
+        // Local player guess handling
         btnEnter.setOnClickListener {
             val guess = viewModel.getCurrentRowGuess(len)
             if (guess == null) {
                 Toast.makeText(this, "Not enough letters.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val fb = LocalWordJudge.feedback(guess, target)
+
+            val fb  = LocalWordJudge.feedback(guess, target)
             val row = viewModel.currentRow()
             val won = viewModel.applyLocalFeedbackAndAdvance(fb)
 
+            // Send move to Firestore
             lifecycleScope.launch {
                 try {
                     repo.postGuess(code, uid, guess, fb, row)
                 } catch (_: Exception) {
-                    Toast.makeText(this@MainActivity, "Couldn’t send move (offline?)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Couldn’t send move (offline?)",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             if (won) {
+                val yourGuesses = row + 1
+                val message = buildString {
+                    append("You solved it in $yourGuesses guesses!\n\n")
+                    append("Word: ${target.uppercase()}")
+                }
+
                 androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("You win 🎉")
-                    .setMessage("Great job! The word was $target.")
-                    .setPositiveButton("OK") { d, _ -> d.dismiss(); finish() }
+                    .setMessage(message)
+                    .setPositiveButton("OK") { d, _ ->
+                        d.dismiss(); finish()
+                    }
                     .show()
             } else if (viewModel.gameState.value == GameState.LOST) {
+                val message = buildString {
+                    append("You used all 6 guesses.\n\n")
+                    append("Word: ${target.uppercase()}")
+                }
+
                 androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("Opponent wins 🧑‍🤝‍🧑")
-                    .setMessage("The word was $target.")
-                    .setPositiveButton("OK") { d, _ -> d.dismiss(); finish() }
+                    .setMessage(message)
+                    .setPositiveButton("OK") { d, _ ->
+                        d.dismiss(); finish()
+                    }
                     .show()
             }
+
         }
     }
+
 
     // -------------------------
     // Shared UI bits

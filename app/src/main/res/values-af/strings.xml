@@ -1,0 +1,153 @@
+<resources>
+    <string name="app_name">Wordle</string>
+    <string name="action_sign_in_short">Teken aan</string>
+    <string name="email">E-pos</string>
+    <string name="minimum_password">Wagwoord te kort, moet 6 karakters lank wees!</string>
+    <string name="auth_failed">Verifikasie het misluk, kyk jou e-pos en wagwoord of teken aan</string>
+    <string name="title_activity_login">Teken aan</string>
+    <string name="prompt_email">E-pos</string>
+    <string name="prompt_password">Wagwoord</string>
+    <string name="action_sign_in">Teken aan of registreer</string>
+    <string name="welcome">"Welkom!"</string>
+    <string name="invalid_username">Nie \'n geldige gebruikernaam nie</string>
+    <string name="invalid_password">Wagwoord moet >5 karakters wees</string>
+    <string name="login_failed">"Aanmelding het misluk"</string>
+    <string name="play_wordle_for_today">Speel Wordle Vir Vandag</string>
+    <string name="share_stats">Deel Statistieke</string>
+    <string name="your_stats">Jou Statistieke</string>
+    <string name="games_played">Speletjies Gespeel</string>
+    <string name="win_percentage">Wen Persentasie</string>
+    <string name="current_streak">Huidige Streep</string>
+    <string name="max_streak">Maksimum Streep</string>
+    <string name="guess_distribution">Raai Verspreiding</string>
+    <string name="no_stats_available">Geen statistieke beskikbaar nie. Speel \'n speletjie om jou vordering te sien!</string>
+    <string name="share_text">Kyk na my Wordle statistieke!\nSpeletjies Gespeel: %1$d\nWen %%: %2$d\nHuidige Streep: %3$d\nMaksimum Streep: %4$d\n#wordle_android</string>
+    <string name="fetching_user_data">Besig om gebruikerdata te haal...</string>
+    <string name="user_profile">Gebruikersprofiel</string>
+    <string name="username">Gebruikernaam</string>
+    <string name="joined_date">Datum Aangesluit</string>
+    <string name="edit_profile">Redigeer Profiel</string>
+    <string name="save">Stoor</string>
+    <string name="select_language">Kies Taal</string>
+    <string name="logout">Teken uit</string>
+    <string name="profile_picture">Profielprent</string>
+    <string name="badges">Kentekens</string>
+    <string name="settings">Instellings</string>
+    <string name="dark_mode">Donker Modus</string>
+    <string name="language">Taal</string>
+    <string name="english">Engels</string>
+    <string name="afrikaans">Afrikaans</string>
+    <string name="classic_wordle">Klassieke Wordle</string>
+    <string name="coming_soon">Kom Binnekort</string>
+    <string name="timed_mode">Tydmodus</string>
+    <string name="speed_wordle">Spoed Wordle</string>
+    <string name="how_to_play">Hoe om te Speel</string>
+    <string name="how_to_play_timed">Hoe om Tydmodus te Speel</string>
+    <string name="how_to_play_classic">"Raai die WOORD in 6 drieë.\nElke raai moet \'n geldige 5-letter woord wees. Druk die enter knoppie om in te dien.\nNa elke raai, sal die kleur van die teëls verander om te wys hoe naby jou raai aan die woord was.\nVoorbeelde\nGroen: Die letter is in die woord en op die regte plek.\nGeel: Die letter is in die woord, maar op die verkeerde plek.\nGrys: Die letter is nie in die woord op enige plek nie.\n\'n Nuwe WOORD sal elke dag beskikbaar wees!"</string>
+    <string name="how_to_play_speed">"In hierdie modus het jy 5 minute om soveel woorde as moontlik op te los.\nElke korrekte raai sal jou by die volgende woord neem, en jou streep verhoog.\nAs jy \'n woord verkeerd raai, sal jou streep herstel word, maar jy kan aanhou speel.\nDie doel is om die hoogste streep en die meeste oorwinnings te behaal voordat die tyd uitloop.\nSterkte!"</string>
+    <string name="next_wordle">Volgende Wordle</string>
+    <string name="word_was">Die woord was: %s</string>
+    <string name="not_in_word_list">Nie in woordelys nie</string>
+    <string name="enter">ENTER</string>
+    <string name="delete">DEL</string>
+    <string name="get_started">Begin</string>
+    <string name="sign_in_with_google">Teken aan met Google</string>
+    <string name="or">of</string>
+    <string name="create_an_account">Skep \'n Rekening</string>
+    <string name="login">Teken aan</string>
+    <string name="already_have_account">Het jy reeds \'n rekening? Teken aan</string>
+    <string name="dont_have_account">Het jy nie \'n rekening nie? Skep een</string>
+    <string name="name">Naam</string>
+    <string name="confirm_password">Bevestig Wagwoord</string>
+    <string name="passwords_do_not_match">Wagwoorde stem nie ooreen nie</string>
+    <string name="sign_up">Teken aan</string>
+    <string name="sign_in_guest">Teken aan as Gas</string>
+    <string name="uh_oh">Uh Oh!</string>
+    <string name="something_went_wrong">Iets het verkeerd geloop. Probeer asseblief weer.</string>
+    <string name="retry">Probeer weer</string>
+    <string name="please_sign_in">Teken asseblief aan om hierdie kenmerk te gebruik.</string>
+    <string name="sign_in">Teken aan</string>
+    <string name="cancel">Kanselleer</string>
+    <string name="sync_conflict">Sinkroniseringskonflik</string>
+    <string name="local_data_newer">Jou plaaslike data is nuwer as die bediener se data. Wat wil jy doen?</string>
+    <string name="overwrite_server">Oorskryf Bediener</string>
+    <string name="keep_local">Hou Plaaslik</string>
+    <string name="discard_local">Gooi Plaaslik weg</string>
+    <string name="daily">Daagliks</string>
+    <string name="speed">Spoed</string>
+    <string name="wordle_stats">Wordle Statistieke</string>
+    <string name="daily_stats">Daaglikse Statistieke</string>
+    <string name="speed_stats">Spoed Statistieke</string>
+    <string name="total_plays">Totale Spele</string>
+    <string name="total_wins">Totale Oorwinnings</string>
+    <string name="best_streak">Beste Streep</string>
+    <string name="average_time">Gemiddelde Tyd</string>
+    <string name="fastest_time">Vinnigste Tyd</string>
+    <string name="no_speed_stats">Geen spoedstatistieke nog nie!</string>
+    <string name="play_some_games">Speel \'n paar speletjies om jou statistieke hier te sien.</string>
+    <string name="streaker_badge_unlocked">Streaker Kenteken Ontsluit!</string>
+    <string name="you_ve_achieved_a_3_day_streak">Jy het \'n 3-dae streep behaal!</string>
+    <string name="daily_devotee_badge_unlocked">Daaglikse Toegewyde Kenteken Ontsluit!</string>
+    <string name="you_ve_completed_5_daily_challenges">Jy het 5 daaglikse uitdagings voltooi!</string>
+    <string name="new_badge_unlocked">Nuwe Kenteken Ontsluit!</string>
+    <string name="check_out_your_badges_in_your_profile">Kyk na jou kentekens in jou profiel.</string>
+    <string name="ok">OK</string>
+    <string name="badges_title">Kentekens</string>
+    <string name="badges_milestones">Mylpale</string>
+    <string name="badge_streaker_1_title">Streaker I</string>
+    <string name="badge_streaker_1_description">3-dae streep</string>
+    <string name="badge_daily_devotee_1_title">Daaglikse Toegewyde I</string>
+    <string name="badge_daily_devotee_1_description">5 daaglikse voltooi</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_greeting">Welkom terug, %1$s</string>
+    <string name="dashboard_streak_start">Begin vandag \'n streep</string>
+    <string name="dashboard_qa_speedle">Spoedle</string>
+    <string name="dashboard_qa_play_vs_ai">Speel teen KI</string>
+    <string name="dashboard_daily_title">Daaglikse WordRush</string>
+    <string name="dashboard_daily_resets_in">Herstel oor %1$s</string>
+    <string name="dashboard_daily_subtitle">Speel vandag se legkaart</string>
+    <string name="dashboard_speedle_title">Spoedle Modus</string>
+    <string name="dashboard_speedle_subtitle">Klits die klok!</string>
+    <string name="dashboard_play_vs_ai_title">Speel Teen KI</string>
+    <string name="dashboard_play_vs_ai_button">Speel teen KI</string>
+
+    <!-- Settings -->
+    <string name="settings_tap">Tik</string>
+    <string name="settings_now">Nou</string>
+
+    <!-- How to Play -->
+    <string name="how_to_play_examples">Voorbeelde</string>
+    <string name="how_to_play_line1">Raai die Woord in 6 probeerslae.</string>
+    <string name="how_to_bullet_1">Elke raaiskoot moet \'n geldige 5-letter woord wees.</string>
+    <string name="how_to_bullet_2">Teëls verander van kleur om te wys hoe naby jou raaiskoot was.</string>
+    <string name="how_to_example_1_desc">W is in die woord en op die regte plek.</string>
+    <string name="how_to_example_2_desc">I is in die woord, maar op die verkeerde plek.</string>
+    <string name="how_to_example_3_desc">U is nie in die woord op enige plek nie.</string>
+    <!-- End Game Summary -->
+    <string name="end_summary_success">Sukses!</string>
+    <string name="welcome_tagline">Jaag die tyd. Krush die woorde.</string>
+
+    <!-- Stats -->
+    <string name="stats_title">Jou Statistieke</string>
+    <string name="stats_played">Gespeel</string>
+    <string name="stats_wins">Oorwinnings</string>
+    <string name="stats_losses">Verliese</string>
+    <string name="stats_win_rate">Wenpersentasie</string>
+    <string name="stats_current_streak">Huidige Reeks</string>
+    <string name="stats_max_streak">Maksimum Reeks</string>
+    <string name="stats_more_insights">Meer insigte kom binnekort</string>
+
+    <!-- Badges -->
+    <string name="badge_icon_content_description">Kentekenikoon</string>
+    <string name="badge_status_unlocked">Ontsluit</string>
+
+    <!-- Opponent -->
+    <string name="opponent_progress_ready">Gereed</string>
+    <string name="opponent_progress_row">Ry %1$d/6</string>
+
+    <!-- Play with AI -->
+    <string name="play_ai_easy_mode">Maklike modus</string>
+    <string name="play_ai_medium_mode">Medium modus</string>
+    <string name="play_ai_hard_mode">Harde modus</string>
+</resources>

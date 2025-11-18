@@ -6,7 +6,6 @@ import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
-
 object StatsManager {
     private const val PREF = "wordrush_stats"
     private const val K_PLAYED = "played"
@@ -18,38 +17,67 @@ object StatsManager {
 
     fun recordGame(ctx: Context, won: Boolean) {
         val sp = ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+
+        // --- basic counts (same as before) ---
         val played = sp.getInt(K_PLAYED, 0) + 1
-        val wins = sp.getInt(K_WINS, 0) + if (won) 1 else 0
+        val wins   = sp.getInt(K_WINS, 0) + if (won) 1 else 0
         val losses = sp.getInt(K_LOSSES, 0) + if (won) 0 else 1
 
-        val currentStreakBefore = sp.getInt(K_CUR_STREAK, 0)
-        val currentStreak = if (won) currentStreakBefore + 1 else 0
-        val maxStreak = maxOf(sp.getInt(K_MAX_STREAK, 0), currentStreak)
+        // --- DAILY STREAK LOGIC ---
+        val todayIso = getTodayIso()
+        val lastIso  = sp.getString(K_LAST_PLAYED, null)
+
+        val todayDate = LocalDate.parse(todayIso)
+        val lastDate  = lastIso?.let {
+            runCatching { LocalDate.parse(it) }.getOrNull()
+        }
+
+        val previousStreak = sp.getInt(K_CUR_STREAK, 0)
+
+        val newStreak = when {
+            // first ever game
+            lastDate == null -> 1
+
+            // already played today -> don't change streak
+            lastDate == todayDate -> previousStreak
+
+            // played yesterday -> continue streak
+            lastDate.plusDays(1) == todayDate -> previousStreak + 1
+
+            // skipped at least one day -> streak resets to 1
+            else -> 1
+        }
+
+        val maxStreak = maxOf(sp.getInt(K_MAX_STREAK, 0), newStreak)
 
         sp.edit()
             .putInt(K_PLAYED, played)
             .putInt(K_WINS, wins)
             .putInt(K_LOSSES, losses)
-            .putInt(K_CUR_STREAK, currentStreak)
+            .putInt(K_CUR_STREAK, newStreak)
             .putInt(K_MAX_STREAK, maxStreak)
-            .putString(K_LAST_PLAYED, getTodayIso())
+            .putString(K_LAST_PLAYED, todayIso)
             .apply()
     }
 
     fun getStats(ctx: Context): Stats {
         val sp = ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
         val played = sp.getInt(K_PLAYED, 0)
-        val wins = sp.getInt(K_WINS, 0)
+        val wins   = sp.getInt(K_WINS, 0)
         val losses = sp.getInt(K_LOSSES, 0)
-        val winRate = if (played > 0) ((wins * 100.0 / played) + 0.5).toInt() else 0
+
+        val winRate = if (played > 0) {
+            ((wins * 100.0 / played) + 0.5).toInt()
+        } else 0
+
         return Stats(
-            played = played,
-            wins = wins,
-            losses = losses,
+            played        = played,
+            wins          = wins,
+            losses        = losses,
             currentStreak = sp.getInt(K_CUR_STREAK, 0),
-            maxStreak = sp.getInt(K_MAX_STREAK, 0),
+            maxStreak     = sp.getInt(K_MAX_STREAK, 0),
             lastPlayedIso = sp.getString(K_LAST_PLAYED, null),
-            winRate = winRate
+            winRate       = winRate
         )
     }
 
