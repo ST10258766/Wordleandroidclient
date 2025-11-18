@@ -159,33 +159,33 @@ WordRush follows a three-layer cloud architecture:
 
 | Welcome | Launch | Register | Login | Dashboard |
 |---------|--------|----------|-------|-----------|
-| <img src="images/welcome%20screen.jpeg" width="250"/> | <img src="images/launch%20screen.jpeg" width="250"/> | <img src="images/Register.jpeg" width="250"/> | <img src="images/login.jpeg" width="250"/> |<img src="images/Home%20Screen.jpeg" width="250"/> |
+| <img src="Images/welcome screen.jpeg.jpg" width="250"/> | <img src="Images/launch screen.jpeg.png" width="250"/> | <img src="images/Images/Register.jpeg.png" width="250"/> | <img src="Images/login.jpeg.png" width="250"/> |<img src="Images/Home Screen.jpeg.png" width="250"/> |
 
 
 ---
 
 | Tutorial Screen | Daily WordRush | Speedle Mode Time  | Speedle mode  |
 |-----------------|----------------|------------------ |----------------|
-| <img src="images/Tutorial.jpeg" width="250"/> | <img src="images/dailywordlescreen.png" width="250"/> | <img src="images/speedlescreen1.png" width="250"/> | <img src="images/speedlescreen2.png" width="250"/> |
+| <img src="Images/Tutorial.jpeg.png" width="250"/> | <img src="Images/dailywordlescreen.png.png" width="250"/> | <img src="Images/speedlescreen1.png.png" width="250"/> | <img src="Images/speedlescreen2.png.png" width="250"/> |
 
 ---
 
 | Multi-player mode Selection  | Muti-player with AI | End Game Screens   | Badges  |
 |-----------------|----------------|------------------ |----------------|
-| <img src="images/MutiplayerAi_S1.jpeg" width="250"/> | <img src="images/MutiplayerAi_S2.jpeg" width="250"/> | <img src="images/EndGameScreen.png" width="250"/> |<img src="https://github.com/Atiyyahm/Wordleandroidclient/blob/master/images/badges.png" width="250"/> |
+| <img src="Images/MutiplayerAi_S1.jpeg.png" width="250"/> | <img src="Images/MutiplayerAi_S2.jpeg.png" width="250"/> | <img src="Images/EndGameScreen.png.png" width="250"/> |<img src="https://github.com/Atiyyahm/Wordleandroidclient/blob/master/images/badges.png" width="250"/> |
 
 
 ---
 | Hints  | Navbar | Profile   | Settings   |
 |-----------------|----------------|------------------ |----------------|
-| <img src="images/hints.png" width="250"/> | <img src="https://github.com/Atiyyahm/Wordleandroidclient/blob/master/images/navbar.png" width="250"/> | <img src="images/profile%20screen.png" width="250"/> |<img src="images/settings%20screen.png" width="250"/> |
+| <img src="Images/hints.png.png" width="250"/> | <img src="https://github.com/Atiyyahm/Wordleandroidclient/blob/master/images/navbar.png" width="250"/> | <img src="Images/profile screen.png.png" width="250"/> |<img src="Images/settings screen.png.png" width="250"/> |
 
 
 ---
 ---
 | Light Mode & Dark Mode |
 |----------------|
-| <img src="images/dm_lm.png" width="250"/> 
+| <img src="Images/dm_lm.png.png" width="250"/> 
 
 
 ---
