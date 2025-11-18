@@ -299,13 +299,13 @@ These completed features prepared WordRush for deployment to the Google Play Sto
 ---
 ## 🎥 Demo Video
 
-[![Watch the Demo](https://img.youtube.com/vi/sbE3L70ndtg/0.jpg)](https://youtu.be/sbE3L70ndtg)
+[![Watch the Demo](https://youtu.be/HSwqAYXv03g)
 
 ---
 
 ## 🧭 Repository Links
 
-- Frontend → [Atiyyahm/Wordleandroidclient](https://github.com/ST10258766/Wordleandroidclient)  
+- Frontend → [ST10258766/Wordleandroidclient](https://github.com/ST10258766/Wordleandroidclient)  
 - Backend → [ST10268917/WordleApp](https://github.com/ST10268917/WordleApp.git)
 
 ---
