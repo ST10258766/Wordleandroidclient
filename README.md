@@ -159,7 +159,7 @@ WordRush follows a three-layer cloud architecture:
 
 | Welcome | Launch | Register | Login | Dashboard |
 |---------|--------|----------|-------|-----------|
-| <img src="Images/welcome screen.jpeg.jpg" width="250"/> | <img src="Images/launch screen.jpeg.png" width="250"/> | <img src="images/Images/Register.jpeg.png" width="250"/> | <img src="Images/login.jpeg.png" width="250"/> |<img src="Images/Home Screen.jpeg.png" width="250"/> |
+| <img src="Images/welcome screen.jpeg.jpg" width="250"/> | <img src="Images/launch screen.jpeg.png" width="250"/> | <img src="Images/Register.jpeg.png" width="250"/> | <img src="Images/login.jpeg.png" width="250"/> |<img src="Images/Home Screen.jpeg.png" width="250"/> |
 
 
 ---
