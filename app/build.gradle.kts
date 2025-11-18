@@ -85,7 +85,9 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
-//Konfetti
+    //Konfetti
     implementation("nl.dionsegijn:konfetti-xml:2.0.2")
 
+
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 }
