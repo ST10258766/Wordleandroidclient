@@ -1,118 +1,288 @@
 <resources>
-
-    <!-- 🌈 App -->
+    <!-- =======================
+        APP & GLOBAL
+    ======================== -->
     <string name="app_name">WordRush</string>
+    <string name="welcome_title">Welcome To WordRush</string>
+    <string name="get_started">Get Started</string>
+    <string name="daily_wordrush">Daily WordRush</string>
+    <string name="back">⌫</string>
+    <string name="enter">ENT</string>
+    <string name="backspace">BACK</string>
+    <string name="ok">OK</string>
+    <string name="help">Help</string>
 
-    <!-- 👋 Welcome / Entry -->
-    <string name="welcome_title">Welcome to WordRush</string>
-    <string name="welcome_subtitle">
-        Daily word puzzles, Speedle mode and neon multiplayer goodness.
-    </string>
-    <string name="get_started">Get started</string>
+    <!-- Keyboard (if needed separately) -->
+    <string name="keyboard_enter">Enter</string>
+    <string name="keyboard_backspace">Back</string>
+
+    <!-- Powerups / hints -->
+    <string name="powerup_locked">Power-up locked</string>
+    <string name="definition_hint">Hint: definition</string>
+    <string name="synonym_hint">Hint: synonym</string>
+
+    <!-- Opponent / multiplayer -->
+    <string name="opponent_avatar">Opponent avatar</string>
+    <string name="no_guess_yet">No guess yet</string>
+    <string name="opponent_progress_ready">Ready</string>
+    <string name="opponent_progress_row">Row %1$d/6</string>
+
+    <!-- Google Auth Client ID -->
+    <string name="default_web_client_id">598667406883-9m60b3etnif36nv7uu2gfmfomldo0s43.apps.googleusercontent.com</string>
+
+    <!-- =======================
+        AUTH SCREENS
+    ======================== -->
+
+    <!-- Login -->
+    <string name="login_title">Login</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_login">Login</string>
+    <string name="login_button_signup">Sign up</string>
+    <string name="login_google_button">Continue with Google</string>
+
+    <!-- Register -->
+    <string name="register_title">Create account</string>
+    <string name="register_fullname_hint">Full name</string>
+    <string name="register_email_hint">Email</string>
+    <string name="register_username_hint">Username</string>
+    <string name="register_password_hint">Password</string>
+    <string name="register_confirm_password_hint">Confirm password</string>
+    <string name="register_button_signup">Sign up</string>
+    <string name="register_login_link">Already have an account? Log in</string>
+
+    <!-- =======================
+        DASHBOARD / NAVIGATION
+    ======================== -->
+    <string name="dashboard_title">WordRush</string>
+    <string name="dashboard_play_ai">Play with AI</string>
+    <string name="dashboard_play_friends">Play with friends</string>
+    <string name="dashboard_speedle">Speedle Mode</string>
+    <string name="dashboard_stats">Stats</string>
+    <string name="dashboard_badges">Badges</string>
+    <string name="dashboard_profile">Profile</string>
+    <string name="dashboard_greeting">Welcome back, %1$s</string>
+    <string name="dashboard_streak_start">Start a streak today</string>
+    <string name="dashboard_qa_speedle">Speedle</string>
+    <string name="dashboard_qa_play_vs_ai">Play vs AI</string>
+    <string name="dashboard_daily_resets_in">Resets in %1$s</string>
+    <string name="dashboard_daily_subtitle">Play today’s puzzle</string>
+    <string name="dashboard_speedle_subtitle">Beat the clock!</string>
+    <string name="dashboard_play_vs_ai_title">Play Vs AI</string>
+    <string name="dashboard_play_vs_ai_button">Play vs AI</string>
+
+    <!-- =======================
+        MULTIPLAYER
+    ======================== -->
+    <string name="multiplayer_title">Multiplayer Mode</string>
+    <string name="multiplayer_play_ai">Play with AI</string>
+    <string name="multiplayer_play_friends">Play with Friends</string>
+
+    <!-- Play with AI -->
+    <string name="play_ai_title">Play with AI</string>
+    <string name="play_ai_easy">Easy</string>
+    <string name="play_ai_medium">Medium</string>
+    <string name="play_ai_hard">Hard</string>
+    <string name="play_ai_start_button">Start</string>
+    <string name="play_ai_easy_mode">Easy Mode</string>
+    <string name="play_ai_medium_mode">Medium Mode</string>
+    <string name="play_ai_hard_mode">Hard Mode</string>
+
+    <!-- Play with Friends -->
+    <string name="play_friends_title">Play with Friends</string>
+    <string name="play_friends_room_hint">Enter room code</string>
+    <string name="play_friends_join">Join room</string>
+    <string name="play_friends_generate">Generate code</string>
+
+    <!-- Waiting room -->
+    <string name="room_title">Room</string>
+    <string name="room_status_waiting">Waiting…</string>
+    <string name="room_cancel">Cancel</string>
+    <string name="room_dev_start">(Dev) Start</string>
+
+    <!-- =======================
+        HOW TO PLAY
+    ======================== -->
+    <string name="how_to_play_title">How to Play</string>
+    <string name="how_to_play_line1">Guess the Wordle in 6 tries.</string>
+    <string name="how_to_bullet_1">Each guess must be a valid 5-letter word.</string>
+    <string name="how_to_bullet_2">Tiles change color to show how close your guess was.</string>
+    <string name="how_to_play_examples">Examples</string>
+    <string name="how_to_example_1_desc">W is in the word and in the correct spot.</string>
+    <string name="how_to_example_2_desc">I is in the word but in the wrong spot.</string>
+    <string name="how_to_example_3_desc">U is not in the word in any spot.</string>
+
+    <!-- =======================
+        PROFILE
+    ======================== -->
+    <string name="profile_stats">Stats</string>
+    <string name="profile_badges">Badges</string>
+    <string name="profile_settings">Settings</string>
+    <string name="profile_logout">Logout</string>
+    <string name="profile_default_name">Your name</string>
+    <string name="profile_default_username">/@username</string>
+
+    <!-- =======================
+        SETTINGS
+    ======================== -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_dark_theme">Dark Theme</string>
+    <string name="settings_haptics">Haptics</string>
+    <string name="settings_notifications">Push Notifications</string>
+    <string name="settings_send_test_notification">Send test notification</string>
+    <string name="settings_trigger_reminders_debug">Trigger both reminders (debug)</string>
+    <string name="settings_tap">Tap</string>
+    <string name="settings_now">Now</string>
+
+    <!-- Language -->
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_value_english">English</string>
+    <string name="settings_language_value_afrikaans">Afrikaans</string>
+
+    <!-- =======================
+        STATS
+    ======================== -->
+    <string name="stats_title">Your Stats</string>
+    <string name="stats_played">Played</string>
+    <string name="stats_wins">Wins</string>
+    <string name="stats_losses">Losses</string>
+    <string name="stats_win_rate">Win Rate</string>
+    <string name="stats_current_streak">Current Streak</string>
+    <string name="stats_max_streak">Max Streak</string>
+    <string name="stats_more_insights">More insights coming soon</string>
+
+    <!-- =======================
+        BADGES
+    ======================== -->
+    <string name="badge_unlocked_title">Badge Unlocked!</string>
+    <string name="badge_unlocked_description">Description</string>
+    <string name="badge_unlocked_button">Nice!</string>
+    <string name="badge_item_default_title">Badge title</string>
+    <string name="badge_item_default_subtitle">Requirement or Unlocked</string>
+    <string name="badges_title">Badges</string>
+    <string name="badges_milestones">Milestones</string>
+    <string name="badge_streaker_1_title">Streaker I</string>
+    <string name="badge_streaker_1_description">3-day streak</string>
+    <string name="badge_daily_devotee_1_title">Daily Devotee I</string>
+    <string name="badge_daily_devotee_1_description">5 dailies completed</string>
+    <string name="badge_icon_content_description">Badge icon</string>
+    <string name="badge_status_unlocked">Unlocked</string>
+
+    <!-- =======================
+        END GAME SUMMARY
+    ======================== -->
+    <string name="end_summary_success">Success!</string>
+
+    <!-- =======================
+        COMMON ERRORS / TOASTS
+    ======================== -->
+    <string name="error_not_enough_letters">Not enough letters</string>
+    <string name="error_word_not_valid">Not a valid word</string>
+    <string name="error_guess_must_be_5">Guess must be 5 letters</string>
+    <string name="error_check_internet">No internet connection</string>
+    <string name="error_already_played">You already completed today’s puzzle</string>
+
+    <!--  App -->
+    <string name="welcome_subtitle">Daily word puzzles, Speedle mode and neon multiplayer goodness.</string>
     <string name="btn_begin">Begin</string>
     <string name="login_subtitle">Welcome back! Log in to continue your streak.</string>
     <string name="register_subtitle">Create your WordRush account to start playing.</string>
 
-    <!-- 🔐 Auth – common buttons/labels -->
+    <!--  Auth – common buttons/labels -->
     <string name="btn_login">Login</string>
     <string name="btn_signup">Sign up</string>
-
-    <string name="login_title">Login</string>
-    <string name="register_title">Create account</string>
-
     <string name="hint_full_name">Full name</string>
     <string name="hint_email">Email</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
 
-    <string name="auth_already_have_account">
-        Already have an account? Log in
-    </string>
-    <string name="auth_no_account_yet">
-        Don’t have an account yet? Sign up
-    </string>
-
+    <string name="auth_already_have_account">Already have an account? Log in</string>
+    <string name="auth_no_account_yet">Don’t have an account yet? Sign up</string>
     <string name="btn_google_continue">Continue with Google</string>
     <string name="btn_biometric_login">Use biometric login</string>
 
-    <!-- 🔐 Auth – messages (we’ll translate these later) -->
-    <string name="msg_enter_email_password">Enter email and password</string>
-    <string name="msg_signup_fullname_required">Please enter your full name</string>
-    <string name="msg_signup_invalid_email">Enter a valid email</string>
-    <string name="msg_signup_username_short">
-        Username must be at least 3 characters
-    </string>
-    <string name="msg_signup_password_weak">
-        Password must be at least 6 characters
-    </string>
-    <string name="msg_signup_password_mismatch">Passwords do not match</string>
-    <string name="msg_signup_username_taken">Username already taken</string>
-    <string name="msg_auth_quick_login_hint">
-        Next time you can use biometrics to log in faster
-    </string>
-
-    <!-- ⌨️ Game / keyboard -->
-    <string name="daily_wordrush">Daily WordRush</string>
-    <string name="back">⌫</string>
-    <string name="help">Help</string>
-    <string name="enter">ENT</string>
-    <string name="backspace">BACK</string>
+    <!--  Game / keyboard -->
     <string name="backspace_short">BACK</string>
-    <string name="powerup_locked">Power-up locked</string>
 
-    <!-- 🤝 Opponent / multiplayer panel -->
-    <string name="opponent_avatar">Opponent avatar</string>
-    <string name="no_guess_yet">No guess yet</string>
-    <string name="definition_hint">Hint: definition</string>
-    <string name="synonym_hint">Hint: synonym</string>
+    <!--  Opponent / multiplayer panel -->
     <string name="opponent_guessed">Opponent guessed: %1$s</string>
 
-    <!-- 👯‍♀️ Friends multiplayer -->
-    <string name="play_friends_title">Play with friends</string>
-    <string name="play_friends_room_hint">Enter room code</string>
-    <string name="play_friends_join">Join room</string>
-    <string name="play_friends_generate">Generate code</string>
-
-    <!-- 🕒 Waiting room -->
-    <string name="room_title">Room</string>
-    <string name="room_status_waiting">Waiting for your friend…</string>
+    <!--  Waiting room -->
     <string name="room_status_ready">Friend joined! Starting…</string>
     <string name="room_starting">Starting match…</string>
 
-
-    <string name="entry_choice_subtitle">
-    Log in or create an account to start playing.
-</string>
+    <string name="entry_choice_subtitle">Log in or create an account to start playing.</string>
 
     <!-- fix typo -->
-    <string name="error_create_room_failed">
-    Could not create a room. Please try again.
-</string>
+    <string name="error_create_room_failed">Could not create a room. Please try again.</string>
 
-
-
-    <!-- Field hints -->
-
-
-
-    <!-- Buttons / helpers -->
-
-
-
-
-    <!-- ⚠️ Multiplayer toasts / errors -->
-    <string name="toast_room_created">
-        Room %1$s created. Share this code with your friend.
-    </string>
+    <!--  Multiplayer toasts / errors -->
+    <string name="toast_room_created">Room %1$s created. Share this code with your friend.</string>
     <string name="error_room_code_required">Please enter a room code.</string>
     <string name="error_room_code_invalid">Room code should be 6 characters.</string>
-
     <string name="error_join_room_failed">Could not join room.</string>
 
-    <!-- 🔑 Google client id (keep as-is for Firebase config) -->
-    <string name="default_web_client_id">
-        598667406883-9m60b3etnif36nv7uu2gfmfomldo0s43.apps.googleusercontent.com
-    </string>
+
+    <string name="msg_enter_email_password">Please enter both email and password</string>
+    <string name="msg_auth_quick_login_hint">Logged in successfully</string>
+
+
+    <string name="msg_signup_fullname_required">Full name is required</string>
+    <string name="msg_signup_invalid_email">Please enter a valid email</string>
+    <string name="msg_signup_username_short">Username must be at least 3 characters</string>
+    <string name="msg_signup_password_weak">Password is too weak</string>
+    <string name="msg_signup_password_mismatch">Passwords do not match</string>
+
+
+    <string name="msg_signup_username_taken">This username is already taken</string>
+
+    <!-- Dashboard -->
+    <string name="dg_greeting">Good evening</string>
+    <string name="dg_streak_start">Start a streak today</string>
+    <string name="dg_pick_mode">Pick a mode to start playing</string>
+
+    <!-- Quick Actions -->
+    <string name="qa_daily">Daily</string>
+    <string name="qa_speedle">Speedle</string>
+    <string name="qa_play_ai">Play vs AI</string>
+    <string name="qa_friends">Friends</string>
+    <string name="qa_leaderboard">Leaderboard</string>
+    <string name="qa_badges">Badges</string>
+    <string name="qa_stats">Stats</string>
+
+    <!-- Daily card -->
+    <string name="daily_title">Daily WordRush</string>
+    <string name="daily_resets_in">Resets in 00:00:00</string>
+    <string name="daily_play_today">Play today’s puzzle</string>
+
+    <!-- Speedle -->
+    <string name="speedle_title">Speedle Mode</string>
+    <string name="speedle_sub">Beat the clock!</string>
+    <string name="speedle_60">60s</string>
+    <string name="speedle_90">90s</string>
+    <string name="speedle_120">120s</string>
+    <string name="speedle_start">Start Speedle</string>
+
+    <!-- AI -->
+    <string name="ai_title">Play vs AI</string>
+    <string name="ai_sub">Race a smart opponent with the same word.</string>
+    <string name="ai_start">Start AI battle</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_sub">See global rankings</string>
+
+    <!-- Badges -->
+    <string name="badges_sub">View your achievements</string>
+
+    <string name="dashboard_pick_mode">Pick a mode to start playing </string>
+
+
+    <!-- Profile screen -->
+    <string name="profile_avatar">Profile avatar</string>
+    <string name="profile_fullname">Your Name</string>
+    <string name="profile_username">\@username</string>
 
 </resources>

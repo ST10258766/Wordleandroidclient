@@ -6,7 +6,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.Button
@@ -29,6 +31,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var rowTestNotification: View
     private lateinit var rowTriggerNow: View
 
+    private lateinit var rowLanguage: View
+    private lateinit var tvLanguageValue: TextView
+
+
     companion object {
         private const val REQ_POST_NOTIFICATIONS = 1001
     }
@@ -43,6 +49,9 @@ class SettingsActivity : AppCompatActivity() {
         swNotifications = findViewById(R.id.swNotifications)
         rowTestNotification = findViewById(R.id.rowTestNotification)
         rowTriggerNow = findViewById(R.id.rowTriggerNow)
+
+        rowLanguage = findViewById(R.id.rowLanguage)
+        tvLanguageValue = findViewById(R.id.tvLanguageValue)
 
         // Observe states
         lifecycleScope.launch {
@@ -93,6 +102,17 @@ class SettingsActivity : AppCompatActivity() {
             NotificationHelper.showSpeedleReminder(this)
             Toast.makeText(this, "Triggered both reminders", Toast.LENGTH_SHORT).show()
         }
+        // Language row → open language picker
+        rowLanguage.setOnClickListener {
+            showLanguageDialog()
+        }
+
+        // Read current language once and show label
+        lifecycleScope.launch {
+            val code = SettingsStore.getLanguageCodeOnce(this@SettingsActivity) ?: "en"
+            updateLanguageLabel(code)
+        }
+
     }
 
     private fun enableNotifications() {
@@ -147,4 +167,47 @@ class SettingsActivity : AppCompatActivity() {
                 swNotifications.isChecked = false
         }
     }
-}
+    private fun updateLanguageLabel(code: String) {
+        val resId = when (code.lowercase()) {
+            "af" -> R.string.settings_language_value_afrikaans
+            else -> R.string.settings_language_value_english
+        }
+        tvLanguageValue.text = getString(resId)
+    }
+
+    private fun showLanguageDialog() {
+        val codes = arrayOf("en", "af")
+        val labels = arrayOf(
+            getString(R.string.settings_language_value_english),
+            getString(R.string.settings_language_value_afrikaans)
+        )
+
+        lifecycleScope.launch {
+            val currentCode = SettingsStore.getLanguageCodeOnce(this@SettingsActivity) ?: "en"
+            val checkedIndex = if (currentCode.equals("af", ignoreCase = true)) 1 else 0
+
+            AlertDialog.Builder(this@SettingsActivity)
+                .setTitle(R.string.settings_language_title)
+                .setSingleChoiceItems(labels, checkedIndex) { dialog, which ->
+                    val selectedCode = codes[which]
+
+                    // Save in DataStore
+                    lifecycleScope.launch {
+                        SettingsStore.setLanguageCode(this@SettingsActivity, selectedCode)
+                    }
+
+                    // Apply immediately at app level
+                    WordleApplication.applyLanguage(selectedCode)
+
+                    // Update row label
+                    updateLanguageLabel(selectedCode)
+
+                    // Recreate this screen so texts refresh
+                    dialog.dismiss()
+                    recreate()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+    }
+        }

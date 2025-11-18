@@ -14,7 +14,7 @@
             android:id="@+id/tvGreeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/settings_title"
             android:textColor="@color/text_primary"
             android:textStyle="bold"
             android:textSize="24sp"/>
@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Dark theme"
+                android:text="@string/settings_dark_theme"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"/>
 
@@ -55,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Haptics"
+                android:text="@string/settings_haptics"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"/>
 
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Push Notifications"
+                android:text="@string/settings_notifications"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"/>
 
@@ -105,14 +105,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Send test notification"
+                android:text="@string/settings_send_test_notification"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tap"
+                android:text="@string/settings_tap"
                 android:textColor="@color/text_secondary"/>
         </LinearLayout>
 
@@ -133,17 +133,45 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Trigger both reminders (debug)"
+                android:text="@string/settings_trigger_reminders_debug"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Now"
+                android:text="@string/settings_now"
                 android:textColor="@color/text_secondary"/>
         </LinearLayout>
 
+        <!-- Language -->
+        <LinearLayout
+            android:id="@+id/rowLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_section_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/settings_language_title"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvLanguageValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_language_value_english"
+                android:textColor="@color/text_secondary"/>
+        </LinearLayout>
 
 
     </LinearLayout>

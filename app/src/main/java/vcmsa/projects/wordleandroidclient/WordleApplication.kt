@@ -3,6 +3,7 @@ package vcmsa.projects.wordleandroidclient
 import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
@@ -16,8 +17,51 @@ import vcmsa.projects.wordleandroidclient.notifications.NotificationHelper
 
 class WordleApplication : Application() {
 
+    companion object {
+        /**
+         * Apply the app's locale based on a code ("en" or "af").
+         * If something unexpected comes in, default to English.
+         */
+        fun applyLanguage(code: String) {
+            val tag = when (code.lowercase()) {
+                "af" -> "af"
+                else -> "en"
+            }
+            val appLocales = LocaleListCompat.forLanguageTags(tag)
+            AppCompatDelegate.setApplicationLocales(appLocales)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
+
+        // 1) Read saved language, or detect from system on first run
+        val languageCode = runBlocking {
+            SettingsStore.getLanguageCodeOnce(applicationContext)
+        }
+
+        val finalCode = if (languageCode.isNullOrBlank()) {
+            // First time: auto-detect system language
+            val sysLang = resources.configuration.locales[0].language
+            val detected = if (sysLang.startsWith("af", ignoreCase = true)) {
+                "af"
+            } else {
+                "en"
+            }
+
+            // Save it asynchronously so next launch uses this directly
+            ProcessLifecycleOwner.get().lifecycleScope.launch {
+                SettingsStore.setLanguageCode(applicationContext, detected)
+            }
+
+            detected
+        } else {
+            languageCode
+        }
+
+        // 2) Apply the locale for this app process
+        applyLanguage(finalCode)
+
 
         // 1️⃣ Apply saved dark / light theme at startup (this replaces MyApp)
         val isDark = runBlocking {

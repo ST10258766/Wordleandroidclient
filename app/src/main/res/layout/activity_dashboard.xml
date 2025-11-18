@@ -17,8 +17,6 @@
         app:title=""
         app:contentInsetStartWithNavigation="0dp">
 
-
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -44,8 +42,6 @@
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/app_name"/>
 
-
-    <!-- Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,16 +54,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Greeting + streak -->
+            <!-- Greeting -->
             <TextView
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good evening,"
+                android:text="@string/dg_greeting"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:textSize="24sp"/>
 
+            <!-- Streak -->
             <TextView
                 android:id="@+id/chipStreak"
                 android:layout_width="wrap_content"
@@ -76,23 +73,23 @@
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
                 android:background="@drawable/bg_chip"
-                android:text="Start a streak today"
+                android:text="@string/dg_streak_start"
                 android:textColor="#FFD08A"
                 android:textStyle="bold"/>
 
+            <!-- Pick mode -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Pick a mode to start playing \uD83D\uDC47"
+                android:text="@string/dg_pick_mode"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"/>
 
-            <!-- Quick actions row (horizontal) -->
+            <!-- Quick actions -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fillViewport="false"
                 android:layout_marginTop="16dp">
 
                 <LinearLayout
@@ -101,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <!-- QA: Daily -->
+                    <!-- Daily -->
                     <LinearLayout
                         android:id="@+id/qaDaily"
                         android:orientation="vertical"
@@ -110,21 +107,23 @@
                         android:padding="8dp"
                         android:gravity="center_horizontal"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_dailywordle"
-                            android:contentDescription="Daily"/>
+                            android:contentDescription="@string/qa_daily"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Daily"
+                            android:text="@string/qa_daily"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Speedle -->
+                    <!-- Speedle -->
                     <LinearLayout
                         android:id="@+id/qaSpeedle"
                         android:orientation="vertical"
@@ -134,21 +133,23 @@
                         android:gravity="center_horizontal"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_speedlemode"
-                            android:contentDescription="Speedle"/>
+                            android:contentDescription="@string/qa_speedle"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Speedle"
+                            android:text="@string/qa_speedle"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Play vs AI -->
+                    <!-- Play vs AI -->
                     <LinearLayout
                         android:id="@+id/qaPlayAi"
                         android:orientation="vertical"
@@ -158,21 +159,23 @@
                         android:gravity="center_horizontal"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_multiplayer"
-                            android:contentDescription="Play vs AI"/>
+                            android:contentDescription="@string/qa_play_ai"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Play vs AI"
+                            android:text="@string/qa_play_ai"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Friends -->
+                    <!-- Friends -->
                     <LinearLayout
                         android:id="@+id/qaFriends"
                         android:orientation="vertical"
@@ -182,22 +185,23 @@
                         android:gravity="center_horizontal"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_multiplayer"
-                            android:contentDescription="Friends"/>
+                            android:contentDescription="@string/qa_friends"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Friends"
+                            android:text="@string/qa_friends"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Leaderboard -->
+                    <!-- Leaderboard -->
                     <LinearLayout
                         android:id="@+id/qaLeaderboard"
                         android:orientation="vertical"
@@ -207,21 +211,23 @@
                         android:gravity="center_horizontal"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_leaderboard"
-                            android:contentDescription="Leaderboard"/>
+                            android:contentDescription="@string/qa_leaderboard"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Leaderboard"
+                            android:text="@string/qa_leaderboard"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Badges -->
+                    <!-- Badges -->
                     <LinearLayout
                         android:id="@+id/qaBadges"
                         android:orientation="vertical"
@@ -231,21 +237,23 @@
                         android:gravity="center_horizontal"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_icon_pill">
+
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_badges"
-                            android:contentDescription="Badges"/>
+                            android:contentDescription="@string/qa_badges"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Badges"
+                            android:text="@string/qa_badges"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
-                    <!-- QA: Stats -->
+                    <!-- Stats -->
                     <LinearLayout
                         android:id="@+id/qaStats"
                         android:orientation="vertical"
@@ -260,22 +268,20 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_stats"
-                            android:contentDescription="Stats"/>
+                            android:contentDescription="@string/qa_stats"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Stats"
+                            android:text="@string/qa_stats"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
-
-
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- Daily WordRush (primary card) -->
+            <!-- DAILY CARD -->
             <LinearLayout
                 android:id="@+id/cardDaily"
                 android:layout_width="match_parent"
@@ -288,7 +294,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daily WordRush"
+                    android:text="@string/daily_title"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"/>
@@ -297,7 +303,7 @@
                     android:id="@+id/tvDailyCountdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Resets in 00:00:00"
+                    android:text="@string/daily_resets_in"
                     android:textColor="#CFEAFF"
                     android:layout_marginTop="6dp"/>
 
@@ -305,12 +311,12 @@
                     android:id="@+id/tvDailySub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Play today’s puzzle"
+                    android:text="@string/daily_play_today"
                     android:textColor="#EAF7FF"
                     android:layout_marginTop="6dp"/>
             </LinearLayout>
 
-            <!-- Speedle (card with radio and button) -->
+            <!-- SPEEDLE CARD -->
             <LinearLayout
                 android:id="@+id/cardSpeedle"
                 android:layout_width="match_parent"
@@ -323,7 +329,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Speedle Mode"
+                    android:text="@string/speedle_title"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"/>
@@ -331,7 +337,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Beat the clock!"
+                    android:text="@string/speedle_sub"
                     android:textColor="#EAF7FF"
                     android:layout_marginTop="4dp"/>
 
@@ -346,14 +352,14 @@
                         android:id="@+id/rb60"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="60s"
+                        android:text="@string/speedle_60"
                         android:textColor="@android:color/white"/>
 
                     <RadioButton
                         android:id="@+id/rb90"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="90s"
+                        android:text="@string/speedle_90"
                         android:layout_marginStart="16dp"
                         android:textColor="@android:color/white"/>
 
@@ -361,7 +367,7 @@
                         android:id="@+id/rb120"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="120s"
+                        android:text="@string/speedle_120"
                         android:layout_marginStart="16dp"
                         android:textColor="@android:color/white"/>
                 </RadioGroup>
@@ -372,12 +378,12 @@
                     android:layout_height="48dp"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/btn_primary_glow"
-                    android:text="Start Speedle"
+                    android:text="@string/speedle_start"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"/>
             </LinearLayout>
 
-            <!-- Play vs AI (card) -->
+            <!-- AI CARD -->
             <LinearLayout
                 android:id="@+id/cardPlayAi"
                 android:layout_width="match_parent"
@@ -390,7 +396,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Play vs AI"
+                    android:text="@string/ai_title"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"/>
@@ -398,7 +404,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Race a smart opponent with the same word."
+                    android:text="@string/ai_sub"
                     android:textColor="#EAF7FF"
                     android:layout_marginTop="4dp"/>
 
@@ -408,12 +414,12 @@
                     android:layout_height="48dp"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/btn_primary_glow"
-                    android:text="Start AI battle"
+                    android:text="@string/ai_start"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"/>
             </LinearLayout>
 
-            <!-- Leaderboard + Badges mini-cards -->
+            <!-- Leaderboard + Badges -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -432,7 +438,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Leaderboard"
+                        android:text="@string/leaderboard_title"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
@@ -440,7 +446,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="See global rankings"
+                        android:text="@string/leaderboard_sub"
                         android:textColor="#F6E9FF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
@@ -462,7 +468,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Badges"
+                        android:text="@string/badges_title"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"/>
@@ -470,7 +476,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View your achievements"
+                        android:text="@string/badges_sub"
                         android:textColor="#3D2A00"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
@@ -480,7 +486,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

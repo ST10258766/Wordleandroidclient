@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_dashboard_gradient">
 
     <LinearLayout
@@ -36,7 +36,7 @@
                 android:src="@drawable/ic_profile"
                 android:background="@drawable/bg_avatar_ring"
                 android:padding="10dp"
-                android:contentDescription="Avatar" />
+                android:contentDescription="@string/profile_avatar" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -49,7 +49,7 @@
                     android:id="@+id/tvFullName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Name"
+                    android:text="@string/profile_fullname"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
@@ -58,12 +58,12 @@
                     android:id="@+id/tvUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@username"
+                    android:text="@string/profile_username"
                     android:textColor="@color/text_secondary" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Rows -->
+        <!-- Stats Row -->
         <LinearLayout
             android:id="@+id/rowStats"
             android:layout_width="match_parent"
@@ -87,11 +87,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Stats"
+                android:text="@string/profile_stats"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary" />
         </LinearLayout>
 
+        <!-- Badges Row -->
         <LinearLayout
             android:id="@+id/rowBadges"
             android:layout_width="match_parent"
@@ -115,11 +116,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Badges"
+                android:text="@string/profile_badges"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary" />
         </LinearLayout>
 
+        <!-- Settings Row -->
         <LinearLayout
             android:id="@+id/rowSettings"
             android:layout_width="match_parent"
@@ -143,11 +145,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Settings"
+                android:text="@string/profile_settings"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary" />
         </LinearLayout>
 
+        <!-- Logout Row -->
         <LinearLayout
             android:id="@+id/rowLogout"
             android:layout_width="match_parent"
@@ -171,7 +174,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Logout"
+                android:text="@string/profile_logout"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary" />
         </LinearLayout>
