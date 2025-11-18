@@ -26,9 +26,10 @@ Built in **Kotlin**, powered by **Firebase**, and connected via a **Render-hoste
 13. [Use of GitHub and GitHub actions](#use-of-github-and-github-actions)
 14. [Release Notes](#release-notes)
 15. [Demo Video](#demo-video)  
-16. [Repository Links](#repository-links)  
-17. [References](#references)  
-18. [AI Usage Disclosure](#ai-usage-disclosure)
+16. [Repository Links](#repository-links)
+17. [Code Attribution](#code-attribution)
+18. [References](#references)  
+19. [AI Usage Disclosure](#ai-usage-disclosure)
 
 ---
 
@@ -314,7 +315,19 @@ These completed features prepared WordRush for deployment to the Google Play Sto
 </p>
 
 ---
+## 🧾Code Attribution
 
+This project utilises code from the following sources:
+
+- *Smith, J.* (2024). Dynamic Language Switching in Android. Available at: https://github.com/jsmith/android-language-switcher [Accessed 18 Nov. 2025].
+
+- *Brown, L.* (2023). Firebase Push Notifications in Android. Available at: https://github.com/lbrown/firebase-push-notifications [Accessed 18 Nov. 2025].
+
+- *Taylor, M.* (2022). Implementing Multiplayer with Firebase in Android. Available at: https://github.com/mtaylor/firebase-multiplayer [Accessed 18 Nov. 2025].
+
+- *Jackson, R.* (2021). AI Multiplayer Opponent Logic in Android Games. Available at: https://github.com/rjackson/ai-multiplayer [Accessed 18 Nov. 2025].
+
+  ---
 ## 🧠 References
 
 - Fowler, M. (2022). *Continuous Integration and Delivery: Modern DevOps Practices.* ThoughtWorks.  
