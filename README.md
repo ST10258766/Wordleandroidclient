@@ -166,7 +166,7 @@ WordRush follows a three-layer cloud architecture:
 
 | Tutorial Screen | Daily WordRush | Speedle Mode Time  | Speedle mode  |
 |-----------------|----------------|------------------ |----------------|
-| <img src="images/Tutorial.jpeg" width="250"/> | <img src="images/dailywordlescreen.png" width="250"/> | <img src="images/speedlescreen1.png" width="250"/> |<img src="images/speedlescreen2.png" width="250"/> |
+| <img src="images/Tutorial.jpeg" width="250"/> | <img src="images/dailywordlescreen.png" width="250"/> | <img src="images/speedlescreen1.png" width="250"/> | <img src="images/speedlescreen2.png" width="250"/> |
 
 ---
 
