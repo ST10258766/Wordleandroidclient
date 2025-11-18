@@ -2,9 +2,9 @@ name: Android CI (fast)
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature-branch ]
   pull_request:
-    branches: [ master ]
+    branches: [ feature-branch ]
 
 jobs:
   build:
